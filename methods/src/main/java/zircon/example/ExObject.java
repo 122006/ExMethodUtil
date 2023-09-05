@@ -14,7 +14,7 @@ public class ExObject {
     }
 
     @ExMethod
-    public static <T> T or(T obj, T or) {
+    public static <T> T nullOr(T obj, T or) {
         return obj == null ? or : obj;
     }
 }
