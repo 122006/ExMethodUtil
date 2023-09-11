@@ -1,7 +1,7 @@
 ext {
     zircon_version = "e71014db27"
-    zircon_ex_method = true
-    zircon_temp_string = true
+    zircon_ex_method = false
+    zircon_temp_string = false
 }
 apply plugin: 'java'
 apply plugin: 'zircon'
