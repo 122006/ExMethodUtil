@@ -1,7 +1,14 @@
+ext {
+    zircon_version = "3.0-beta.4"
+    zircon_exMethod = true
+    zircon_tempString = true
+}
 apply plugin: 'java'
 apply plugin: 'zircon'
 
+
 dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
 }
 
 
@@ -13,7 +20,9 @@ repositories {
     maven { url 'https://jitpack.io' }
     mavenCentral()
 }
-
+test {
+    useJUnitPlatform()
+}
 compileJava {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8

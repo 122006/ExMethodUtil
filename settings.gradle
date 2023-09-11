@@ -1,2 +1,4 @@
 rootProject.name = 'ExMethodUtil'
-include ':methods'
+include ':impl'
+include 'test'
+

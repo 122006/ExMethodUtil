@@ -6,7 +6,14 @@ buildscript {
         maven { url 'https://jitpack.io' }
     }
     dependencies {
-        classpath 'com.github.122006.Zircon:gradle:34e72de615'
+        classpath 'com.github.122006.Zircon:gradle:3.0-beta.4'
     }
 }
 
+ext {
+    zircon = {
+        version = '8d048c0be2'
+        tempString = true
+        exMethod = true
+    }
+}
