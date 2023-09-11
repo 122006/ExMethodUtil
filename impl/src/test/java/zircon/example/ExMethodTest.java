@@ -14,6 +14,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ExMethodTest {
     @Test
+    public void testTempString() {
+        {
+            assertEquals("class=ExMethodTest.class", $"class=${ExMethodTest.class.getSimpleName()}.class");
+        }
+    }
+
+    @Test
     public void testExArray() {
         final Class<ExMethodTest> clazz = ExMethodTest.class;
         String[] arr = new String[]{"1", "2", "3"};
