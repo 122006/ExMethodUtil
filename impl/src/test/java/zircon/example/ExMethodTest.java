@@ -6,10 +6,10 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class ExMethodTest {
@@ -34,6 +34,10 @@ public class ExMethodTest {
         }
         {
             assertEquals(Arrays.asList("1", "2", "3"), arr.toList());
+        }
+        {
+            String[] arr2 = new String[]{"1", "2", "3"};
+            assertArrayEquals(new String[]{"1", "2", "3", "1", "2", "3"}, arr.add(arr2));
         }
     }
 
@@ -88,6 +92,10 @@ public class ExMethodTest {
             assertTrue(nullStr.isEmpty());
             assertTrue("".isEmpty());
             assertEquals(Arrays.asList("test1", "test2"), "test1test2".regex("test\\d"));
+            assertEquals(1, "1".toInteger());
+            assertEquals(1, "1".toInt());
+            final List<Integer> collect = Stream.of("1").map(String::toInteger).collect(Collectors.toList());
+            assertEquals(Arrays.asList(1), collect);
         }
     }
 }

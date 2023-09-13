@@ -24,4 +24,15 @@ public class ExString {
     public static boolean isEmpty(String str) {
         return str == null || str.length() == 0;
     }
+
+    @ExMethod
+    public static Integer toInteger(String str) {
+        if (str == null) return null;
+        return Integer.valueOf(str);
+    }
+    @ExMethod
+    public static int toInt(String str) {
+        if (str == null) return 0;
+        return Integer.parseInt(str);
+    }
 }
