@@ -31,11 +31,6 @@ public class ExString {
         return Integer.valueOf(str);
     }
     @ExMethod
-    public static Integer toInteger(String str2,String str) {
-        if (str == null) return null;
-        return Integer.valueOf(str);
-    }
-    @ExMethod
     public static int toInt(String str) {
         if (str == null) return 0;
         return Integer.parseInt(str);
