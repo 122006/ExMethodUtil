@@ -1,6 +1,7 @@
 package zircon.example;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -71,6 +72,8 @@ public class ExMethodTest {
             String nullStr = null;
             assertTrue(nullStr.isNull());
             assertEquals("test", nullStr.nullOr("test"));
+            assertFalse(this.isNull());
+            assertEquals(this, this.nullOr("12"));
         }
     }
 
@@ -95,6 +98,8 @@ public class ExMethodTest {
             assertEquals(1, "1".toInteger());
             assertEquals(1, "1".toInt());
             final List<Integer> collect = Stream.of("1").map(String::toInteger).collect(Collectors.toList());
+//            Stream.of("1").map("123"::toInteger).collect(Collectors.toList());
+
             assertEquals(Arrays.asList(1), collect);
         }
     }
