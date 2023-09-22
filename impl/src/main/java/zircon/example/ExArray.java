@@ -22,7 +22,10 @@ public class ExArray {
         Collections.addAll(list, array);
         return list;
     }
-
+    @ExMethod
+    public static <T> List<T> list(T[] array) {
+        return toList(array);
+    }
 
     @ExMethod
     public static <T> T get(T[] array, int index) {

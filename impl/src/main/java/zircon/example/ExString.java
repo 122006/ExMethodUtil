@@ -2,6 +2,8 @@ package zircon.example;
 
 import zircon.ExMethod;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -30,9 +32,17 @@ public class ExString {
         if (str == null) return null;
         return Integer.valueOf(str);
     }
+
     @ExMethod
     public static int toInt(String str) {
         if (str == null) return 0;
         return Integer.parseInt(str);
     }
+
+    @ExMethod
+    public static BigDecimal toBigDecimal(String str, MathContext mathContext) {
+        if (str == null) return new BigDecimal(0, mathContext);
+        return new BigDecimal(str, mathContext);
+    }
+
 }

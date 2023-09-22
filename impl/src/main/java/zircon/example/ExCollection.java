@@ -4,8 +4,10 @@ import zircon.ExMethod;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ExCollection {
     @ExMethod
@@ -31,5 +33,12 @@ public class ExCollection {
     @ExMethod
     public static <E> boolean allMatch(Collection<E> collection, Predicate<E> predicate) {
         return collection.stream().allMatch(predicate);
+    }
+
+    @ExMethod
+    public static <E> void forEachIndex(List<E> collection, BiFunction<? super E, Integer, ?> function) {
+        for (int i = 0; i < collection.size(); i++) {
+            function.apply(collection.get(i), i);
+        }
     }
 }

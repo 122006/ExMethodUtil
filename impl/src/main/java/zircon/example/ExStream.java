@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -27,10 +28,18 @@ public class ExStream {
     public static <T> Stream<T> distinctByKey(Stream<T> stream, Function<? super T, ?> keyExtractor) {
         return stream.filter(new Predicate<T>() {
             Map<Object, Boolean> seen = new ConcurrentHashMap<>();
+
             @Override
             public boolean test(T t) {
                 return seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
             }
         });
     }
+
+    @ExMethod
+    public static <T> void forEachIndex(Stream<T> stream, BiFunction<? super T, Integer, ?> function) {
+        int[] i = {0};
+        stream.forEach(a -> function.apply(a, i[0]++));
+    }
+
 }
