@@ -4,8 +4,10 @@ import zircon.ExMethod;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class ExArray {
     @ExMethod
@@ -26,7 +28,10 @@ public class ExArray {
     public static <T> List<T> list(T[] array) {
         return toList(array);
     }
-
+    @ExMethod
+    public static <T> Stream<T> stream(T[] array) {
+        return Arrays.stream(array);
+    }
     @ExMethod
     public static <T> T get(T[] array, int index) {
         return array[index];

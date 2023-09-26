@@ -1,5 +1,5 @@
 package zircon.example;
 
-public class ExBigDecimal {
+public class ExDate {
 
 }

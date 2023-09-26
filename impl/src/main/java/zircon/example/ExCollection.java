@@ -4,6 +4,7 @@ import zircon.ExMethod;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -36,9 +37,9 @@ public class ExCollection {
     }
 
     @ExMethod
-    public static <E> void forEachIndex(List<E> collection, BiFunction<? super E, Integer, ?> function) {
+    public static <E> void forEachIndex(List<E> collection, BiConsumer<? super E, Integer> function) {
         for (int i = 0; i < collection.size(); i++) {
-            function.apply(collection.get(i), i);
+            function.accept(collection.get(i), i);
         }
     }
 }

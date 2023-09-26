@@ -3,10 +3,9 @@ package zircon.example;
 import zircon.ExMethod;
 
 import java.lang.reflect.Array;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -37,9 +36,13 @@ public class ExStream {
     }
 
     @ExMethod
-    public static <T> void forEachIndex(Stream<T> stream, BiFunction<? super T, Integer, ?> function) {
+    public static <T> void forEachIndex(Stream<T> stream, BiConsumer<? super T, Integer> function) {
         int[] i = {0};
-        stream.forEach(a -> function.apply(a, i[0]++));
+        stream.forEach(a -> function.accept(a, i[0]++));
+    }
+    @ExMethod
+    public static <T> Stream<T> filterNoNull(Stream<T> stream) {
+        return stream.filter(Objects::nonNull);
     }
 
 }

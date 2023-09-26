@@ -4,6 +4,7 @@ import zircon.ExMethod;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -40,9 +41,31 @@ public class ExString {
     }
 
     @ExMethod
-    public static BigDecimal toBigDecimal(String str, MathContext mathContext) {
-        if (str == null) return new BigDecimal(0, mathContext);
-        return new BigDecimal(str, mathContext);
+    public static Double toDouble(String str) {
+        if (str == null) return null;
+        return Double.valueOf(str);
+    }
+
+    @ExMethod
+    public static double toDoubleValue(String str) {
+        if (str == null) return 0;
+        return Double.parseDouble(str);
+    }
+
+    @ExMethod
+    public static BigDecimal toBigDecimal(String str) {
+        return new BigDecimal(str);
+    }
+    @ExMethod
+    public static BigDecimal toBigDecimal(String str, int setPrecision) {
+        return toBigDecimal(str,setPrecision,RoundingMode.HALF_UP);
+    }
+
+    @ExMethod
+    public static BigDecimal toBigDecimal(String str, int setPrecision, RoundingMode setRoundingMode) {
+        BigDecimal bigDecimal = str == null ? BigDecimal.ZERO : new BigDecimal(str);
+        bigDecimal = bigDecimal.setScale(setPrecision, setRoundingMode);
+        return bigDecimal;
     }
 
 }
