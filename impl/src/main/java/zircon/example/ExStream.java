@@ -44,5 +44,10 @@ public class ExStream {
     public static <T> Stream<T> filterNoNull(Stream<T> stream) {
         return stream.filter(Objects::nonNull);
     }
+    @ExMethod
+    public static <T> Stream<T> flat(Stream<List<T>> stream) {
+        return stream.flatMap(Collection::stream);
+    }
+
 
 }

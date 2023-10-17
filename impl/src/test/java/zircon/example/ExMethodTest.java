@@ -3,16 +3,14 @@ package zircon.example;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 
+@SuppressWarnings("ArraysAsListWithZeroOrOneArgument")
 public class ExMethodTest {
     @Test
     public void testTempString() {
@@ -91,6 +89,8 @@ public class ExMethodTest {
             strings.forEachIndex((str,index)->{
                 assertEquals(strings.get(index), str);
             });
+            assertEquals(Arrays.asList("test3", "test2", "test1"), strings.sortBy(a->3-a.regex("\\d").head().toInt()));
+            assertEquals(Arrays.asList("test1", "test2", "test3","test1", "test2", "test3"), List.create("test1", "test2", "test3").addVarargs(strings.toArray(new String[0])));
         }
     }
 
@@ -104,10 +104,8 @@ public class ExMethodTest {
             assertEquals(1, "1".toInteger());
             assertEquals(1, "1".toInt());
             final List<Integer> collect = Stream.of("1").map(String::toInteger).collect(Collectors.toList());
-//            Stream.of("1").map("123"::toInteger).collect(Collectors.toList());
-
             assertEquals(Arrays.asList(1), collect);
-
+            assertEquals(Arrays.asList("test1", "test2"), Stream.of("test\\d").map("test1test2"::regex).flat().collect(Collectors.toList()));
         }
     }
     @Test
@@ -120,6 +118,8 @@ public class ExMethodTest {
             assertTrue(v1.ge("123"));
             assertFalse(v1.gt("123"));
             assertTrue(v1.gt("023"));
+            assertTrue(v1.in("123","223"));
+            assertFalse(v1.in("023","123"));
         }
 
         {

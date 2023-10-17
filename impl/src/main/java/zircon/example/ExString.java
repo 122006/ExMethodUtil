@@ -39,6 +39,17 @@ public class ExString {
         if (str == null) return 0;
         return Integer.parseInt(str);
     }
+    @ExMethod
+    public static Long toLong(String str) {
+        if (str == null) return null;
+        return Long.valueOf(str);
+    }
+
+    @ExMethod
+    public static long toLongValue(String str) {
+        if (str == null) return 0;
+        return Long.parseLong(str);
+    }
 
     @ExMethod
     public static Double toDouble(String str) {

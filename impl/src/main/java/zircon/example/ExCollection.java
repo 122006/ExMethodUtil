@@ -2,15 +2,37 @@ package zircon.example;
 
 import zircon.ExMethod;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Predicate;
+import java.io.Serializable;
+import java.util.*;
+import java.util.function.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ExCollection {
+    @ExMethod(ex = {List.class})
+    @SafeVarargs
+    public static <E> List<E> create(E... data) {
+        final ArrayList<E> es = new ArrayList<>();
+        Collections.addAll(es, data);
+        return es;
+    }
+
+    public static class ExSet {
+        @ExMethod(ex = {Set.class})
+        @SafeVarargs
+        public static <E> Set<E> create(E... data) {
+            final HashSet<E> es = new HashSet<>();
+            Collections.addAll(es, data);
+            return es;
+        }
+    }
+    @ExMethod
+    public static <E> Collection<E> addVarargs(Collection<E> collection, E... es) {
+        Collections.addAll(collection, es);
+        return collection;
+    }
+
+
     @ExMethod
     public static <E> E find(Collection<E> collection, Predicate<E> predicate) {
         return collection.stream().filter(predicate).findFirst().orElse(null);
@@ -29,6 +51,31 @@ public class ExCollection {
     @ExMethod
     public static <E> boolean noneMatch(Collection<E> collection, Predicate<E> predicate) {
         return collection.stream().noneMatch(predicate);
+    }
+
+    @ExMethod
+    public static <E> List<E> sort(Collection<E> collection) {
+        return collection.stream().sorted().collect(Collectors.toList());
+    }
+
+    @ExMethod
+    public static <E, U extends Comparable<? super U>> List<E> sortBy(Collection<E> collection, Function<E, U> function) {
+        return collection.stream().sorted(Comparator.comparing(function)).collect(Collectors.toList());
+    }
+
+    @ExMethod
+    public static <E> E head(List<E> list) {
+        return list.get(0);
+    }
+
+    @ExMethod
+    public static <E> Optional<E> first(List<E> list) {
+        return list.isEmpty() ? Optional.empty() : Optional.ofNullable(list.get(0));
+    }
+
+    @ExMethod
+    public static <E> Optional<E> last(List<E> list) {
+        return list.isEmpty() ? Optional.empty() : Optional.ofNullable(list.get(list.size() - 1));
     }
 
     @ExMethod
