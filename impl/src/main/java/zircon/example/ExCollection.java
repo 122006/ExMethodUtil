@@ -82,6 +82,26 @@ public class ExCollection {
     public static <E> boolean allMatch(Collection<E> collection, Predicate<E> predicate) {
         return collection.stream().allMatch(predicate);
     }
+    @ExMethod
+    public static <E,M> Map<M,List<E>> groupBy(Collection<E> collection, Function<E, M> function) {
+        return collection.stream().collect(Collectors.groupingBy(function));
+    }
+    @ExMethod
+    public static <E> List<E> limit(List<E> collection, int count) {
+        if (count>=collection.size()){
+            return collection;
+        }
+        return new ArrayList<>(collection.subList(0, count));
+    }
+    @ExMethod
+    public static <E> List<E> skip(List<E> collection, int count) {
+        final ArrayList<E> objects = new ArrayList<>();
+        for (int i = count; i < collection.size(); i++) {
+            objects.add(collection.get(i));
+        }
+        return objects;
+    }
+
 
     @ExMethod
     public static <E> void forEachIndex(List<E> collection, BiConsumer<? super E, Integer> function) {
