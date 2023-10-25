@@ -2,8 +2,12 @@ package zircon.example;
 
 import org.junit.jupiter.api.Test;
 
+
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -83,8 +87,9 @@ public class ExMethodTest {
     @Test
     public void testExCollection() {
         {
+            Arrays.asList("test1", "test2", "test3").find(a -> a.endsWith("1"));
             List<String> strings = Arrays.asList("test1", "test2", "test3");
-            assertEquals("test1", strings.subList(0, 1).find((a) -> a.endsWith("1")));
+            assertEquals("test1", strings.subList(0, 1).find(a -> a.endsWith("1")));
             assertEquals(Arrays.asList("test1"), strings.findAll((a) -> a.endsWith("1")));
             strings.forEachIndex((str,index)->{
                 assertEquals(strings.get(index), str);

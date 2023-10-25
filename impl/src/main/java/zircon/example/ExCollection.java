@@ -10,7 +10,6 @@ import java.util.stream.Stream;
 
 public class ExCollection {
     @ExMethod(ex = {List.class})
-    @SafeVarargs
     public static <E> List<E> create(E... data) {
         final ArrayList<E> es = new ArrayList<>();
         Collections.addAll(es, data);
@@ -19,7 +18,6 @@ public class ExCollection {
 
     public static class ExSet {
         @ExMethod(ex = {Set.class})
-        @SafeVarargs
         public static <E> Set<E> create(E... data) {
             final HashSet<E> es = new HashSet<>();
             Collections.addAll(es, data);
