@@ -1,6 +1,7 @@
 package zircon.example;
 
 import zircon.ExMethod;
+import zircon.data.ThrowFunction;
 
 import java.io.Serializable;
 import java.util.*;
@@ -16,6 +17,7 @@ public class ExCollection {
         return es;
     }
 
+
     public static class ExSet {
         @ExMethod(ex = {Set.class})
         public static <E> Set<E> create(E... data) {
@@ -24,6 +26,7 @@ public class ExCollection {
             return es;
         }
     }
+
     @ExMethod
     public static <E> Collection<E> addVarargs(Collection<E> collection, E... es) {
         Collections.addAll(collection, es);
@@ -33,12 +36,20 @@ public class ExCollection {
 
     @ExMethod
     public static <E> E find(Collection<E> collection, Predicate<E> predicate) {
-        return collection.stream().filter(predicate).findFirst().orElse(null);
+        for (E e : collection) {
+            if (predicate.test(e))
+                return e;
+        }
+        return null;
     }
 
     @ExMethod
     public static <E> List<E> findAll(Collection<E> collection, Predicate<E> predicate) {
         return collection.stream().filter(predicate).collect(Collectors.toList());
+    }
+    @ExMethod
+    public static <E> Collection<E> filter(Collection<E> collection, Predicate<E> predicate) {
+        return findAll(collection,predicate);
     }
 
     @ExMethod
@@ -52,13 +63,35 @@ public class ExCollection {
     }
 
     @ExMethod
+    public static <K, M> List<M> map(List<K> collection, ThrowFunction<K,M> function) {
+        return collection.stream().map(e -> {
+            try {
+                return function.apply((K)e);
+            } catch (Exception ex) {
+                throw (RuntimeException) ex;
+            }
+        }).collect(Collectors.toList());
+    }
+
+//    @ExMethod
+//    public static <E, M> Set<M> map(Set<E> collection, Function<E, M> function) {
+//        return collection.stream().map(e -> {
+//            try {
+//                return function.apply(e);
+//            } catch (Exception ex) {
+//                throw (RuntimeException) ex;
+//            }
+//        }).collect(Collectors.toSet());
+//    }
+
+    @ExMethod
     public static <E> List<E> sort(Collection<E> collection) {
         return collection.stream().sorted().collect(Collectors.toList());
     }
 
     @ExMethod
-    public static <E, U extends Comparable<? super U>> List<E> sortBy(Collection<E> collection, Function<E, U> function) {
-        return collection.stream().sorted(Comparator.comparing(function)).collect(Collectors.toList());
+    public static <E,U extends Comparable> List<E> sortBy(Collection<E> collection, Function<E, U> function) {
+        return (List<E>) collection.stream().sorted(Comparator.comparing(function)).collect(Collectors.toList());
     }
 
     @ExMethod
@@ -71,6 +104,7 @@ public class ExCollection {
         return list.isEmpty() ? Optional.empty() : Optional.ofNullable(list.get(0));
     }
 
+
     @ExMethod
     public static <E> Optional<E> last(List<E> list) {
         return list.isEmpty() ? Optional.empty() : Optional.ofNullable(list.get(list.size() - 1));
@@ -80,17 +114,20 @@ public class ExCollection {
     public static <E> boolean allMatch(Collection<E> collection, Predicate<E> predicate) {
         return collection.stream().allMatch(predicate);
     }
+
     @ExMethod
-    public static <E,M> Map<M,List<E>> groupBy(Collection<E> collection, Function<E, M> function) {
+    public static <E, M> Map<M, List<E>> groupBy(Collection<E> collection, Function<E, M> function) {
         return collection.stream().collect(Collectors.groupingBy(function));
     }
+
     @ExMethod
     public static <E> List<E> limit(List<E> collection, int count) {
-        if (count>=collection.size()){
+        if (count >= collection.size()) {
             return collection;
         }
         return new ArrayList<>(collection.subList(0, count));
     }
+
     @ExMethod
     public static <E> List<E> skip(List<E> collection, int count) {
         final ArrayList<E> objects = new ArrayList<>();

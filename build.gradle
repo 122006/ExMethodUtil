@@ -3,7 +3,12 @@ buildscript {
         maven {
             url uri('../../repo')
         }
+        maven {url 'https://maven.aliyun.com/nexus/content/groups/public/'}
         maven { url 'https://jitpack.io' }
+        maven {
+            url uri('D:/android/repo')
+        }
+        google()
     }
     dependencies {
         classpath 'com.github.122006.Zircon:gradle:3.1.3'
