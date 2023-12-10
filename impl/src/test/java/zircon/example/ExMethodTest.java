@@ -5,10 +5,8 @@ import zircon.data.ThrowFunction;
 
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -104,12 +102,13 @@ public class ExMethodTest {
             assertFalse(this.isNull());
             assertEquals(this, this.nullOr(new ExMethodTest()));
             assertEquals("test1", "test".convert(a -> a += "1"));
-            assertEquals(new String[]{"test1"}, new String[]{"test"}.convert(a -> {
+            assertArrayEquals(new String[]{"test1"}, new String[]{"test"}.convert(a -> {
                 a[0] += "1";
                 return a;
             }));
-            assertEquals(new String[]{"test1"}, (new String[]{"test"}).let(a -> a[0] += "1"));
-            assertEquals(new int[]{2}, (new int[]{1}).let(a -> a[0] += 1));
+
+            assertArrayEquals(new String[]{"test1"}, (new String[]{"test"}).let(a -> a[0] += "1"));
+            assertArrayEquals(new int[]{2}, (new int[]{1}).let(a -> a[0] += 1));
         }
     }
 
@@ -127,11 +126,11 @@ public class ExMethodTest {
             ExCollection.sortBy(strings, function);
             assertEquals(Arrays.asList("test1", "test2", "test3", "test1", "test2", "test3"), List.create("test1", "test2", "test3").addVarargs(strings.toArray(new String[0])));
             strings.map(a -> Integer.parseInt(a.nullOr("123").substring(4)));
-            assertThrowsExactly(NumberFormatException.class, () -> strings.map(a -> Integer.parseInt(a)));
+            assertThrowsExactly(NumberFormatException.class, () -> strings.map(a -> Integer.valueOf(a)));
             assertThrowsExactly(NumberFormatException.class, () -> strings.map(a -> Integer.parseInt(a)));
             ExCollection.map(strings, a -> a.substring(4)).map(Integer::parseInt);
             assertEquals(Arrays.asList("1", "2", "3"), strings.map(a -> a.regex("\\d")).stream().flat().list());
-
+            assertEquals(123,$throw(()-> Integer.valueOf("123")).get());
         }
     }
 
