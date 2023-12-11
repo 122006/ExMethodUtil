@@ -15,6 +15,11 @@ public class ExObject {
     }
 
     @ExMethod
+    public static boolean notNull(Object obj) {
+        return obj != null;
+    }
+
+    @ExMethod
     public static <T> T nullOr(T obj, T or) {
         return obj == null ? or : obj;
     }
@@ -34,6 +39,7 @@ public class ExObject {
 
     @ExMethod
     public static <T> T let(T obj, ThrowConsumer<T> supplier) {
+        if (obj==null) return null;
         try {
             supplier.accept(obj);
             return obj;
@@ -44,6 +50,7 @@ public class ExObject {
 
     @ExMethod
     public static <T, R> R convert(T obj, ThrowFunction<T, R> supplier) {
+        if (obj==null) return null;
         try {
             return supplier.apply(obj);
         } catch (Exception e) {

@@ -23,6 +23,10 @@ public class ExString {
         return list;
     }
 
+    @ExMethod
+    public static boolean nullOrEmpty(String str) {
+        return str == null || str.length() == 0;
+    }
     @ExMethod(cover = true)
     public static boolean isEmpty(String str) {
         return str == null || str.length() == 0;

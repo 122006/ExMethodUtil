@@ -72,6 +72,10 @@ public class ExCollection {
             }
         }).collect(Collectors.toList());
     }
+    @ExMethod
+    public static <E> boolean nullOrEmpty(Collection<E> collection) {
+        return collection == null || collection.isEmpty();
+    }
 
 //    @ExMethod
 //    public static <E, M> Set<M> map(Set<E> collection, Function<E, M> function) {
