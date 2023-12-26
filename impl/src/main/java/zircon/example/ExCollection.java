@@ -3,11 +3,9 @@ package zircon.example;
 import zircon.ExMethod;
 import zircon.data.ThrowFunction;
 
-import java.io.Serializable;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class ExCollection {
     @ExMethod(ex = {List.class})
@@ -44,12 +42,23 @@ public class ExCollection {
     }
 
     @ExMethod
-    public static <E> List<E> findAll(Collection<E> collection, Predicate<E> predicate) {
+    public static <E> List<E> findAll(List<E> collection, Predicate<E> predicate) {
         return collection.stream().filter(predicate).collect(Collectors.toList());
     }
+
     @ExMethod
-    public static <E> Collection<E> filter(Collection<E> collection, Predicate<E> predicate) {
-        return findAll(collection,predicate);
+    public static <E> Set<E> findAll(Set<E> collection, Predicate<E> predicate) {
+        return collection.stream().filter(predicate).collect(Collectors.toSet());
+    }
+
+    @ExMethod
+    public static <E> List<E> filter(List<E> collection, Predicate<E> predicate) {
+        return findAll(collection, predicate);
+    }
+
+    @ExMethod
+    public static <E> Set<E> filter(Set<E> collection, Predicate<E> predicate) {
+        return findAll(collection, predicate);
     }
 
     @ExMethod
@@ -63,15 +72,16 @@ public class ExCollection {
     }
 
     @ExMethod
-    public static <K, M> List<M> map(List<K> collection, ThrowFunction<K,M> function) {
+    public static <K, M> List<M> map(List<K> collection, ThrowFunction<K, M> function) {
         return collection.stream().map(e -> {
             try {
-                return function.apply((K)e);
+                return function.apply((K) e);
             } catch (Exception ex) {
                 throw (RuntimeException) ex;
             }
         }).collect(Collectors.toList());
     }
+
     @ExMethod
     public static <E> boolean nullOrEmpty(Collection<E> collection) {
         return collection == null || collection.isEmpty();
@@ -94,7 +104,7 @@ public class ExCollection {
     }
 
     @ExMethod
-    public static <E,U extends Comparable> List<E> sortBy(Collection<E> collection, Function<E, U> function) {
+    public static <E, U extends Comparable> List<E> sortBy(Collection<E> collection, Function<E, U> function) {
         return (List<E>) collection.stream().sorted(Comparator.comparing(function)).collect(Collectors.toList());
     }
 
@@ -141,6 +151,26 @@ public class ExCollection {
         return objects;
     }
 
+    @ExMethod
+    public static <E> String join(List<E> collection, String str) {
+        StringBuilder string = new StringBuilder();
+        for (int i = 0; i < collection.size(); i++) {
+            string.append(collection.get(i));
+            if (i != collection.size() - 1)
+                string.append(str);
+        }
+        return string.toString();
+    }
+
+    @ExMethod
+    public static <E> List<E> distinct(List<E> collection) {
+        return collection.stream().distinct().collect(Collectors.toList());
+    }
+
+    @ExMethod
+    public static <E> List<E> distinct(List<E> collection, Function<? super E, ?> keyExtractor) {
+        return collection.stream().distinctByKey(keyExtractor).collect(Collectors.toList());
+    }
 
     @ExMethod
     public static <E> void forEachIndex(List<E> collection, BiConsumer<? super E, Integer> function) {

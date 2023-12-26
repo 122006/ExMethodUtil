@@ -1,17 +1,27 @@
 package zircon.example;
 
-import zircon.ExMethod;
-import zircon.data.*;
-
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import zircon.ExMethod;
+import zircon.data.ThrowConsumer;
+import zircon.data.ThrowFunction;
+import zircon.data.ThrowPredicate;
+import zircon.data.ThrowRunnable;
+import zircon.data.ThrowSupplier;
+
 public class ExObject {
     @ExMethod
     public static boolean isNull(Object obj) {
         return obj == null;
+    }
+
+
+    @ExMethod
+    public static void ifNull(Object obj, Runnable runnable) {
+        if (obj == null) runnable.run();
     }
 
     @ExMethod
@@ -39,7 +49,7 @@ public class ExObject {
 
     @ExMethod
     public static <T> T let(T obj, ThrowConsumer<T> supplier) {
-        if (obj==null) return null;
+        if (obj == null) return null;
         try {
             supplier.accept(obj);
             return obj;
@@ -49,8 +59,26 @@ public class ExObject {
     }
 
     @ExMethod
+    public static <T> T cast(Object object, Class<T> tClass) {
+        if (tClass == String.class) {
+            return (T) String.valueOf(object);
+        }
+        return tClass.cast(object);
+    }
+
+    @ExMethod
+    public static <T> boolean isInstanceOf(Object object, Class<T> tClass) {
+        return tClass.isInstance(object);
+    }
+
+    @ExMethod
+    public static <T> boolean isNoInstanceOf(Object object, Class<T> tClass) {
+        return !tClass.isInstance(object);
+    }
+
+    @ExMethod
     public static <T, R> R convert(T obj, ThrowFunction<T, R> supplier) {
-        if (obj==null) return null;
+        if (obj == null) return null;
         try {
             return supplier.apply(obj);
         } catch (Exception e) {
@@ -112,5 +140,6 @@ public class ExObject {
             }
         };
     }
+
 
 }

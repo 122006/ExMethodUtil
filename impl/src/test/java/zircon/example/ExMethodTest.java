@@ -1,17 +1,29 @@
 package zircon.example;
 
-import org.junit.jupiter.api.Test;
-import zircon.data.ThrowFunction;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import zircon.example.ExArray;
+import zircon.example.ExCollection;
+import zircon.example.ExComparable;
+import zircon.example.ExObject;
+import zircon.example.ExReflection;
+import zircon.example.ExStream;
+import zircon.example.ExString;
 
 
 @SuppressWarnings("ArraysAsListWithZeroOrOneArgument")
@@ -20,6 +32,7 @@ public class ExMethodTest {
     public void testTempString() {
         {
             assertEquals("class=ExMethodTest.class", $"class=${ExMethodTest.class.getSimpleName()}.class");
+            assertEquals("listString=123,456", $"listString=${Arrays.asList("123",456).join(",")}");
         }
     }
 
@@ -109,6 +122,9 @@ public class ExMethodTest {
 
             assertArrayEquals(new String[]{"test1"}, (new String[]{"test"}).let(a -> a[0] += "1"));
             assertArrayEquals(new int[]{2}, (new int[]{1}).let(a -> a[0] += 1));
+            assertTrue("123".isInstanceOf(CharSequence.class));
+            assertFalse("123".isNoInstanceOf(CharSequence.class));
+
         }
     }
 
@@ -122,15 +138,19 @@ public class ExMethodTest {
                 assertEquals(strings.get(index), str);
             });
             Function<String, Integer> function = a -> 3 - a.regex("\\d").head().toInt();
-            assertEquals(Arrays.asList("test3", "test2", "test1"), strings.sortBy(a -> 3 - a.regex("\\d").head().toInt()));
+            assertEquals(Arrays.asList("test3", "test2", "test1"), strings.sortBy(a -> 3 - a.regex("\\d").head()
+                                                                                            .toInt()));
             ExCollection.sortBy(strings, function);
-            assertEquals(Arrays.asList("test1", "test2", "test3", "test1", "test2", "test3"), List.create("test1", "test2", "test3").addVarargs(strings.toArray(new String[0])));
+            assertEquals(Arrays.asList("test1", "test2", "test3", "test1", "test2", "test3"), List
+                    .create("test1", "test2", "test3").addVarargs(strings.toArray(new String[0])));
             strings.map(a -> Integer.parseInt(a.nullOr("123").substring(4)));
             assertThrowsExactly(NumberFormatException.class, () -> strings.map(a -> Integer.valueOf(a)));
             assertThrowsExactly(NumberFormatException.class, () -> strings.map(a -> Integer.parseInt(a)));
             ExCollection.map(strings, a -> a.substring(4)).map(Integer::parseInt);
             assertEquals(Arrays.asList("1", "2", "3"), strings.map(a -> a.regex("\\d")).stream().flat().list());
-            assertEquals(123,$throw(()-> Integer.valueOf("123")).get());
+            assertEquals(123, $throw(() -> Integer.valueOf("123")).get());
+            assertEquals("123,456", Arrays.asList(123, 456).join(","));
+
         }
     }
 
@@ -145,7 +165,8 @@ public class ExMethodTest {
             assertEquals(1, "1".toInt());
             final List<Integer> collect = Stream.of("1").map(String::toInteger).collect(Collectors.toList());
             assertEquals(Arrays.asList(1), collect);
-            assertEquals(Arrays.asList("test1", "test2"), Stream.of("test\\d").map("test1test2"::regex).flat().collect(Collectors.toList()));
+            assertEquals(Arrays.asList("test1", "test2"), Stream.of("test\\d").map("test1test2"::regex).flat()
+                                                                .collect(Collectors.toList()));
         }
     }
 
@@ -173,5 +194,37 @@ public class ExMethodTest {
             assertTrue(bigDecimal.gt("023".toBigDecimal(2)));
             assertTrue(bigDecimal.eq("123".toBigDecimal(2)));
         }
+    }
+
+    @Test
+    public void testReflection() {
+        assertEquals("fv1", FatherReflectionTestClass.class.getStaticFieldValue("value"));
+        assertEquals("fv2", FatherReflectionTestClass.class.getStaticFieldValue("value2"));
+        assertEquals("fv3", FatherReflectionTestClass.class.getStaticFieldValue("fatherValue"));
+        assertEquals((String) null, FatherReflectionTestClass.class.getStaticFieldValue("value3"));
+        assertEquals("v1", FatherReflectionTestClass.ReflectionReflectionTestClass.class.getStaticFieldValue("value"));
+        assertEquals("v2", FatherReflectionTestClass.ReflectionReflectionTestClass.class.getStaticFieldValue("value2"));
+        assertEquals((String) null, FatherReflectionTestClass.ReflectionReflectionTestClass.class.getStaticFieldValue("fatherValue"));
+        assertEquals((String) null, FatherReflectionTestClass.ReflectionReflectionTestClass.class.getStaticFieldValue("value3"));
+        final FatherReflectionTestClass fatherTestClass = new FatherReflectionTestClass();
+        assertEquals("fv3", fatherTestClass.reflectionFieldValue("fatherValue"));
+        assertEquals("fv03", fatherTestClass.reflectionFieldValue("value3"));
+        assertEquals((String) null, fatherTestClass.reflectionFieldValue("value4"));
+        final FatherReflectionTestClass.ReflectionReflectionTestClass reflectionTestClass = new FatherReflectionTestClass.ReflectionReflectionTestClass();
+        assertEquals("v4", reflectionTestClass.reflectionFieldValue("value4"));
+        assertEquals("v03", reflectionTestClass.reflectionFieldValue("value3"));
+
+
+        assertEquals("fsm", fatherTestClass.reflectionInvokeMethod("staticMethod"));
+        assertEquals("fsm", fatherTestClass.getClass().invokeStaticMethod("staticMethod"));
+        assertEquals("fm1", fatherTestClass.reflectionInvokeMethod("method1"));
+        assertEquals("fm2", fatherTestClass.reflectionInvokeMethod("method2", "str", 12));
+        assertEquals("fm22", fatherTestClass.reflectionInvokeMethod("method2", "str", "str2"));
+        assertEquals((String) null, fatherTestClass.reflectionInvokeMethod("method2"));
+        assertEquals("m3", reflectionTestClass.reflectionInvokeMethod("method3"));
+        assertEquals((String) null, fatherTestClass.reflectionInvokeMethod("method4"));
+        assertEquals((String) null, fatherTestClass.reflectionInvokeMethod("method2", "str", BigDecimal.ZERO));
+        assertEquals("m5", reflectionTestClass.reflectionInvokeMethod("method5",reflectionTestClass));
+
     }
 }
