@@ -7,4 +7,7 @@ import java.util.function.Function;
 public interface ThrowRunnable {
     void run() throws Exception;
 
+    default ThrowRunnable _this(){
+        return this;
+    }
 }

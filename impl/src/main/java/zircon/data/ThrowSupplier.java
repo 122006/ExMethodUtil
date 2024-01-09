@@ -4,4 +4,7 @@ package zircon.data;
 public interface ThrowSupplier<T> {
     T get() throws Exception;
 
+    default ThrowSupplier<T> _this(){
+        return this;
+    }
 }

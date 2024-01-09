@@ -43,12 +43,24 @@ public class ExCollection {
 
     @ExMethod
     public static <E> List<E> findAll(List<E> collection, Predicate<E> predicate) {
-        return collection.stream().filter(predicate).collect(Collectors.toList());
+        List<E> list = new ArrayList<>();
+        for (E e : collection) {
+            if (predicate.test(e)) {
+                list.add(e);
+            }
+        }
+        return list;
     }
 
     @ExMethod
     public static <E> Set<E> findAll(Set<E> collection, Predicate<E> predicate) {
-        return collection.stream().filter(predicate).collect(Collectors.toSet());
+        Set<E> set = new HashSet<>();
+        for (E e : collection) {
+            if (predicate.test(e)) {
+                set.add(e);
+            }
+        }
+        return set;
     }
 
     @ExMethod
@@ -63,12 +75,22 @@ public class ExCollection {
 
     @ExMethod
     public static <E> boolean anyMatch(Collection<E> collection, Predicate<E> predicate) {
-        return collection.stream().anyMatch(predicate);
+        for (E e : collection) {
+            if (predicate.test(e)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @ExMethod
     public static <E> boolean noneMatch(Collection<E> collection, Predicate<E> predicate) {
-        return collection.stream().noneMatch(predicate);
+        for (E e : collection) {
+            if (predicate.test(e)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @ExMethod
@@ -100,7 +122,9 @@ public class ExCollection {
 
     @ExMethod
     public static <E> List<E> sort(Collection<E> collection) {
-        return collection.stream().sorted().collect(Collectors.toList());
+        List<E> list = new ArrayList<>(collection);
+        list.sort(null);
+        return list;
     }
 
     @ExMethod
@@ -126,12 +150,21 @@ public class ExCollection {
 
     @ExMethod
     public static <E> boolean allMatch(Collection<E> collection, Predicate<E> predicate) {
-        return collection.stream().allMatch(predicate);
+        for (E e : collection) {
+            if (!predicate.test(e)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @ExMethod
     public static <E, M> Map<M, List<E>> groupBy(Collection<E> collection, Function<E, M> function) {
-        return collection.stream().collect(Collectors.groupingBy(function));
+        Map<M, List<E>> map = new HashMap<>();
+        for (E e : collection) {
+            map.computeIfAbsent(function.apply(e), k -> new ArrayList<>()).add(e);
+        }
+        return map;
     }
 
     @ExMethod
@@ -164,7 +197,14 @@ public class ExCollection {
 
     @ExMethod
     public static <E> List<E> distinct(List<E> collection) {
-        return collection.stream().distinct().collect(Collectors.toList());
+        List<E> list = new ArrayList<>();
+        Set<E> uniqueValues = new HashSet<>();
+        for (E e : collection) {
+            if (uniqueValues.add(e)) {
+                list.add(e);
+            }
+        }
+        return list;
     }
 
     @ExMethod
@@ -178,4 +218,15 @@ public class ExCollection {
             function.accept(collection.get(i), i);
         }
     }
+
+    @ExMethod
+    public static <E, R> List<R> mapIndex(List<E> collection, BiFunction<? super E, Integer, R> function) {
+        List<R> re = new ArrayList<>();
+        for (int i = 0; i < collection.size(); i++) {
+            final R apply = function.apply(collection.get(i), i);
+            re.add(apply);
+        }
+        return re;
+    }
+
 }

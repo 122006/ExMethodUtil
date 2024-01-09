@@ -13,6 +13,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -224,7 +226,7 @@ public class ExMethodTest {
         assertEquals("m3", reflectionTestClass.reflectionInvokeMethod("method3"));
         assertEquals((String) null, fatherTestClass.reflectionInvokeMethod("method4"));
         assertEquals((String) null, fatherTestClass.reflectionInvokeMethod("method2", "str", BigDecimal.ZERO));
-        assertEquals("m5", reflectionTestClass.reflectionInvokeMethod("method5",reflectionTestClass));
+        assertEquals("m5", reflectionTestClass.reflectionInvokeMethod("method5", reflectionTestClass));
 
     }
 }

@@ -27,6 +27,7 @@ public class ExString {
     public static boolean nullOrEmpty(String str) {
         return str == null || str.length() == 0;
     }
+
     @ExMethod(cover = true)
     public static boolean isEmpty(String str) {
         return str == null || str.length() == 0;
@@ -39,10 +40,17 @@ public class ExString {
     }
 
     @ExMethod
+    public static Byte toByte(String str) {
+        if (str == null) return null;
+        return Byte.valueOf(str);
+    }
+
+    @ExMethod
     public static int toInt(String str) {
         if (str == null) return 0;
         return Integer.parseInt(str);
     }
+
     @ExMethod
     public static Long toLong(String str) {
         if (str == null) return null;
@@ -71,9 +79,10 @@ public class ExString {
     public static BigDecimal toBigDecimal(String str) {
         return new BigDecimal(str);
     }
+
     @ExMethod
     public static BigDecimal toBigDecimal(String str, int setPrecision) {
-        return toBigDecimal(str,setPrecision,RoundingMode.HALF_UP);
+        return toBigDecimal(str, setPrecision, RoundingMode.HALF_UP);
     }
 
     @ExMethod

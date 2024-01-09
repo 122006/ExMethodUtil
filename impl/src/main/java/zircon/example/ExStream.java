@@ -26,7 +26,7 @@ public class ExStream {
     @ExMethod
     public static <T> Stream<T> distinctByKey(Stream<T> stream, Function<? super T, ?> keyExtractor) {
         return stream.filter(new Predicate<T>() {
-            Map<Object, Boolean> seen = new ConcurrentHashMap<>();
+            final Map<Object, Boolean> seen = new ConcurrentHashMap<>();
 
             @Override
             public boolean test(T t) {
