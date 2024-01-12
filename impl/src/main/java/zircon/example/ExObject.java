@@ -60,6 +60,7 @@ public class ExObject {
 
     @ExMethod
     public static <T> T cast(Object object, Class<T> tClass) {
+        if (object == null) return null;
         if (tClass == String.class) {
             return (T) String.valueOf(object);
         }

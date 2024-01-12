@@ -8,6 +8,7 @@ import java.util.Date;
 public class ExDate {
     @ExMethod
     public static String format(Date date, String parseStr) {
+        if (date==null) return null;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(parseStr);
         return simpleDateFormat.format(date);
     }
@@ -34,16 +35,19 @@ public class ExDate {
 
     @ExMethod
     public static String dateStr(Date date) {
+        if (date==null) return null;
         return date.format("yyyy/MM/dd");
     }
 
     @ExMethod
     public static String timeStr(Date date) {
+        if (date==null) return null;
         return date.format("HH:mm:ss");
     }
 
     @ExMethod
     public static String dateTimeStr(Date date) {
+        if (date==null) return null;
         return date.format("yyyy/MM/dd HH:mm:ss");
     }
 

@@ -149,7 +149,7 @@ public class ExMethodTest {
             assertThrowsExactly(NumberFormatException.class, () -> strings.map(a -> Integer.valueOf(a)));
             assertThrowsExactly(NumberFormatException.class, () -> strings.map(a -> Integer.parseInt(a)));
             ExCollection.map(strings, a -> a.substring(4)).map(Integer::parseInt);
-            assertEquals(Arrays.asList("1", "2", "3"), strings.map(a -> a.regex("\\d")).stream().flat().list());
+            assertEquals(Arrays.asList(1, 2, 3), strings.map(a -> a.regex("\\d")).stream().flat().map(String::toInt).list());
             assertEquals(123, $throw(() -> Integer.valueOf("123")).get());
             assertEquals("123,456", Arrays.asList(123, 456).join(","));
 
@@ -228,5 +228,23 @@ public class ExMethodTest {
         assertEquals((String) null, fatherTestClass.reflectionInvokeMethod("method2", "str", BigDecimal.ZERO));
         assertEquals("m5", reflectionTestClass.reflectionInvokeMethod("method5", reflectionTestClass));
 
+    }
+
+    @Test
+    public void testShow() {
+
+        //例1
+        "java,Zircon,:)".split(",")
+                        .find(a -> a.startsWith("Z"))             //为字符串数组增加find方法
+                        .let(System.out::println);//print: Zircon //为Object增加流式处理函数，避免额外定义变量
+
+        //例2
+        final int num = "num is 1"
+                .regex("\\d")   //为String增加快速正则匹配方法
+                .head()         //为集合增加选取首个值的方法
+                .nullOr("123")  //空安全方法，如果调用对象为null，不会空指针异常而是使用参数值（举例用，这里一定不为null可省略）
+                .toInteger()       //为String增加快速转化int的方法
+                .convert(i -> Math.abs(i + 1)); //为Object增加的流式转化函数，避免先定义i再修改导致无法修改final变量
+        new Thread(() -> System.out.println(num)).start();// print 2 //lambda表达式中引用的方法变量必须为final。
     }
 }

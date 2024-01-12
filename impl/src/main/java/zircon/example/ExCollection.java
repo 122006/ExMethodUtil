@@ -27,6 +27,7 @@ public class ExCollection {
 
     @ExMethod
     public static <E> Collection<E> addVarargs(Collection<E> collection, E... es) {
+        if (collection==null) return null;
         Collections.addAll(collection, es);
         return collection;
     }
@@ -34,6 +35,7 @@ public class ExCollection {
 
     @ExMethod
     public static <E> E find(Collection<E> collection, Predicate<E> predicate) {
+        if (collection==null) return null;
         for (E e : collection) {
             if (predicate.test(e))
                 return e;
@@ -54,6 +56,7 @@ public class ExCollection {
 
     @ExMethod
     public static <E> Set<E> findAll(Set<E> collection, Predicate<E> predicate) {
+        if (collection==null) return null;
         Set<E> set = new HashSet<>();
         for (E e : collection) {
             if (predicate.test(e)) {
@@ -65,11 +68,13 @@ public class ExCollection {
 
     @ExMethod
     public static <E> List<E> filter(List<E> collection, Predicate<E> predicate) {
+        if (collection==null) return null;
         return findAll(collection, predicate);
     }
 
     @ExMethod
     public static <E> Set<E> filter(Set<E> collection, Predicate<E> predicate) {
+        if (collection==null) return null;
         return findAll(collection, predicate);
     }
 
@@ -95,6 +100,7 @@ public class ExCollection {
 
     @ExMethod
     public static <K, M> List<M> map(List<K> collection, ThrowFunction<K, M> function) {
+        if (collection==null) return null;
         return collection.stream().map(e -> {
             try {
                 return function.apply((K) e);
@@ -122,6 +128,7 @@ public class ExCollection {
 
     @ExMethod
     public static <E> List<E> sort(Collection<E> collection) {
+        if (collection==null) return null;
         List<E> list = new ArrayList<>(collection);
         list.sort(null);
         return list;
@@ -129,22 +136,26 @@ public class ExCollection {
 
     @ExMethod
     public static <E, U extends Comparable> List<E> sortBy(Collection<E> collection, Function<E, U> function) {
+        if (collection==null) return null;
         return (List<E>) collection.stream().sorted(Comparator.comparing(function)).collect(Collectors.toList());
     }
 
     @ExMethod
     public static <E> E head(List<E> list) {
-        return list.get(0);
+        if (list==null) return null;
+        return list.isEmpty() ? null : list.get(0);
     }
 
     @ExMethod
     public static <E> Optional<E> first(List<E> list) {
+        if (list==null) return Optional.empty();
         return list.isEmpty() ? Optional.empty() : Optional.ofNullable(list.get(0));
     }
 
 
     @ExMethod
     public static <E> Optional<E> last(List<E> list) {
+        if (list==null) return Optional.empty();
         return list.isEmpty() ? Optional.empty() : Optional.ofNullable(list.get(list.size() - 1));
     }
 
@@ -160,6 +171,7 @@ public class ExCollection {
 
     @ExMethod
     public static <E, M> Map<M, List<E>> groupBy(Collection<E> collection, Function<E, M> function) {
+        if (collection==null) return null;
         Map<M, List<E>> map = new HashMap<>();
         for (E e : collection) {
             map.computeIfAbsent(function.apply(e), k -> new ArrayList<>()).add(e);
@@ -169,6 +181,7 @@ public class ExCollection {
 
     @ExMethod
     public static <E> List<E> limit(List<E> collection, int count) {
+        if (collection==null) return null;
         if (count >= collection.size()) {
             return collection;
         }
@@ -177,6 +190,7 @@ public class ExCollection {
 
     @ExMethod
     public static <E> List<E> skip(List<E> collection, int count) {
+        if (collection==null) return null;
         final ArrayList<E> objects = new ArrayList<>();
         for (int i = count; i < collection.size(); i++) {
             objects.add(collection.get(i));
@@ -186,6 +200,7 @@ public class ExCollection {
 
     @ExMethod
     public static <E> String join(List<E> collection, String str) {
+        if (collection==null) return null;
         StringBuilder string = new StringBuilder();
         for (int i = 0; i < collection.size(); i++) {
             string.append(collection.get(i));
@@ -197,6 +212,7 @@ public class ExCollection {
 
     @ExMethod
     public static <E> List<E> distinct(List<E> collection) {
+        if (collection==null) return null;
         List<E> list = new ArrayList<>();
         Set<E> uniqueValues = new HashSet<>();
         for (E e : collection) {
@@ -209,6 +225,7 @@ public class ExCollection {
 
     @ExMethod
     public static <E> List<E> distinct(List<E> collection, Function<? super E, ?> keyExtractor) {
+        if (collection==null) return null;
         return collection.stream().distinctByKey(keyExtractor).collect(Collectors.toList());
     }
 
@@ -221,6 +238,7 @@ public class ExCollection {
 
     @ExMethod
     public static <E, R> List<R> mapIndex(List<E> collection, BiFunction<? super E, Integer, R> function) {
+        if (collection==null) return null;
         List<R> re = new ArrayList<>();
         for (int i = 0; i < collection.size(); i++) {
             final R apply = function.apply(collection.get(i), i);

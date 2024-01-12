@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 public class ExString {
     @ExMethod
     public static List<String> regex(String str, String regex) {
+        if (str == null) return new ArrayList<>();
         Pattern pattern = Pattern.compile(regex);
         final Matcher matcher = pattern.matcher(str);
         List<String> list = new ArrayList<String>();
