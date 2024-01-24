@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -142,6 +143,11 @@ public class ExMethodTest {
             Function<String, Integer> function = a -> 3 - a.regex("\\d").head().toInt();
             assertEquals(Arrays.asList("test3", "test2", "test1"), strings.sortBy(a -> 3 - a.regex("\\d").head()
                                                                                             .toInt()));
+            final List<Integer> intList = Arrays.asList(3, 2, 1);
+            assertEquals(Arrays.asList(1,2,3), intList.sort());
+            assertEquals(Arrays.asList(1,2,3), intList.copy2List().let(it->it.sort(Comparator.comparingInt(a->a))));
+            assertEquals(Arrays.asList(1,2,3), intList.sortBy(a->a));
+            strings.sortBy(function);
             ExCollection.sortBy(strings, function);
             assertEquals(Arrays.asList("test1", "test2", "test3", "test1", "test2", "test3"), List
                     .create("test1", "test2", "test3").addVarargs(strings.toArray(new String[0])));
@@ -149,10 +155,19 @@ public class ExMethodTest {
             assertThrowsExactly(NumberFormatException.class, () -> strings.map(a -> Integer.valueOf(a)));
             assertThrowsExactly(NumberFormatException.class, () -> strings.map(a -> Integer.parseInt(a)));
             ExCollection.map(strings, a -> a.substring(4)).map(Integer::parseInt);
-            assertEquals(Arrays.asList(1, 2, 3), strings.map(a -> a.regex("\\d")).stream().flat().map(String::toInt).list());
+            assertEquals(Arrays.asList(1, 2, 3), strings.map(a -> a.regex("\\d")).stream().flat().map(String::toInt)
+                                                        .list());
             assertEquals(123, $throw(() -> Integer.valueOf("123")).get());
             assertEquals("123,456", Arrays.asList(123, 456).join(","));
-
+            assertTrue("123".oneOf("123", "456"));
+            assertEquals("1,2,3",
+                    Arrays.asList("test1", "test2", "test3", "test1", "test2", "test3")
+                          .groupBy(a -> a.regex("\\d").head())
+                          .keySet().copy2List().sortBy(a->a).join(","));
+            assertEquals("2,2,2",
+                    Arrays.asList("test1", "test2", "test3", "test1", "test2", "test3")
+                          .groupBy(a -> a.regex("\\d").head(), List::size)
+                          .values().copy2List().sortBy(a->a).join(","));
         }
     }
 
@@ -165,6 +180,9 @@ public class ExMethodTest {
             assertEquals(Arrays.asList("test1", "test2"), "test1test2".regex("test\\d"));
             assertEquals(1, "1".toInteger());
             assertEquals(1, "1".toInt());
+            assertEquals("123", nullStr.nullOrEmpty("123"));
+            assertEquals("123", "".nullOrEmpty("123"));
+            assertEquals("123", "123".nullOrEmpty(""));
             final List<Integer> collect = Stream.of("1").map(String::toInteger).collect(Collectors.toList());
             assertEquals(Arrays.asList(1), collect);
             assertEquals(Arrays.asList("test1", "test2"), Stream.of("test\\d").map("test1test2"::regex).flat()
@@ -248,3 +266,4 @@ public class ExMethodTest {
         new Thread(() -> System.out.println(num)).start();// print 2 //lambda表达式中引用的方法变量必须为final。
     }
 }
+

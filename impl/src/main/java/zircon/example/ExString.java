@@ -29,6 +29,15 @@ public class ExString {
         return str == null || str.length() == 0;
     }
 
+    @ExMethod
+    public static String nullOrEmpty(String str, String str2) {
+        if (str.nullOrEmpty()) {
+            return str2;
+        }
+        return str;
+    }
+
+
     @ExMethod(cover = true)
     public static boolean isEmpty(String str) {
         return str == null || str.length() == 0;
