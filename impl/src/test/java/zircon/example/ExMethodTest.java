@@ -115,6 +115,7 @@ public class ExMethodTest {
             String nullStr = null;
             assertTrue(nullStr.isNull());
             assertEquals("test", nullStr.nullOr("test"));
+            assertEquals("test", nullStr.nullOr("test").let(a->a.length()));
             assertFalse(this.isNull());
             assertEquals(this, this.nullOr(new ExMethodTest()));
             assertEquals("test1", "test".convert(a -> a += "1"));

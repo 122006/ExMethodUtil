@@ -48,7 +48,7 @@ public class ExObject {
 
 
     @ExMethod
-    public static <T> T let(T obj, ThrowConsumer<T> supplier) {
+    public static <T> T let(T obj, ThrowConsumer<? super T> supplier) {
         if (obj == null) return null;
         try {
             supplier.accept(obj);

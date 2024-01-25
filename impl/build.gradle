@@ -1,5 +1,5 @@
 ext {
-    zircon_version = "3.1.5"
+    zircon_version = "3.1.7"
     zircon_ex_method = true
     zircon_temp_string = true
 }
