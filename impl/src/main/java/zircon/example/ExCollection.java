@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -13,6 +14,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -50,6 +52,16 @@ public class ExCollection {
 
 
     @ExMethod
+    public static <E> List<E> flat(Collection<List<E>> collection) {
+        if (collection == null) return null;
+        List<E> list = new ArrayList<E>();
+        for (List<E> e : collection) {
+            list.addAll(e);
+        }
+        return list;
+    }
+
+    @ExMethod
     public static <E> E find(Collection<E> collection, Predicate<E> predicate) {
         if (collection == null) return null;
         for (E e : collection) {
@@ -81,6 +93,142 @@ public class ExCollection {
         }
         return set;
     }
+
+    @ExMethod
+    public static <E, R> List<E> filterContains(Collection<E> collection, List<R> collection2, BiPredicate<E, R> predicate) {
+        if (collection == null) return new ArrayList<>();
+        if (collection2 == null) return new ArrayList<>();
+        List<E> list = new ArrayList<>();
+        for (E e : collection) {
+            for (R r : collection2) {
+                if ((e == null && r != null) || (e != null && r == null)) continue;
+                if (predicate.test(e, r)) {
+                    list.add(e);
+                    break;
+                }
+            }
+        }
+        return list;
+    }
+
+    @ExMethod
+    public static <T> T[] toArray(Collection<T> list, Class<T> tClass) {
+        if (list == null) return null;
+        final T[] objectArray = ExArray.createObjectArray(tClass, list.size());
+        System.arraycopy(list.toArray(), 0, objectArray, 0, list.size());
+        return objectArray;
+    }
+
+    @ExMethod
+    public static int[] toIntArray(Collection<Integer> list) {
+        if (list == null) return null;
+        final int[] objectArray = new int[list.size()];
+        final Iterator<Integer> iterator = list.iterator();
+        int i = 0;
+        while (iterator.hasNext()) {
+            objectArray[i] = iterator.next();
+            i++;
+        }
+        return objectArray;
+    }
+
+    @ExMethod
+    public static long[] toLongArray(Collection<Long> list) {
+        if (list == null) return null;
+        final long[] objectArray = new long[list.size()];
+        final Iterator<Long> iterator = list.iterator();
+        int i = 0;
+        while (iterator.hasNext()) {
+            objectArray[i] = iterator.next();
+            i++;
+        }
+        return objectArray;
+    }
+
+    @ExMethod
+    public static short[] toShortArray(Collection<Short> list) {
+        if (list == null) return null;
+        final short[] objectArray = new short[list.size()];
+        final Iterator<Short> iterator = list.iterator();
+        int i = 0;
+        while (iterator.hasNext()) {
+            objectArray[i] = iterator.next();
+            i++;
+        }
+        return objectArray;
+    }
+
+    @ExMethod
+    public static byte[] toByteArray(Collection<Byte> list) {
+        if (list == null) return null;
+        final byte[] objectArray = new byte[list.size()];
+        final Iterator<Byte> iterator = list.iterator();
+        int i = 0;
+        while (iterator.hasNext()) {
+            objectArray[i] = iterator.next();
+            i++;
+        }
+        return objectArray;
+    }
+
+    @ExMethod
+    public static String[] toStringArray(Collection<String> list) {
+        if (list == null) return null;
+        return list.toArray(new String[list.size()]);
+    }
+
+    @ExMethod
+    public static boolean[] toBooleanArray(Collection<Boolean> list) {
+        if (list == null) return null;
+        final boolean[] objectArray = new boolean[list.size()];
+        final Iterator<Boolean> iterator = list.iterator();
+        int i = 0;
+        while (iterator.hasNext()) {
+            objectArray[i] = iterator.next();
+            i++;
+        }
+        return objectArray;
+    }
+
+    @ExMethod
+    public static double[] toDoubleArray(Collection<Double> list) {
+        if (list == null) return null;
+        final double[] objectArray = new double[list.size()];
+        final Iterator<Double> iterator = list.iterator();
+        int i = 0;
+        while (iterator.hasNext()) {
+            objectArray[i] = iterator.next();
+            i++;
+        }
+        return objectArray;
+    }
+
+    @ExMethod
+    public static float[] toFloatArray(Collection<Float> list) {
+        if (list == null) return null;
+        final float[] objectArray = new float[list.size()];
+        final Iterator<Float> iterator = list.iterator();
+        int i = 0;
+        while (iterator.hasNext()) {
+            objectArray[i] = iterator.next();
+            i++;
+        }
+        return objectArray;
+    }
+
+    @ExMethod
+    public static char[] toCharArray(Collection<Character> list) {
+        if (list == null) return null;
+        final char[] objectArray = new char[list.size()];
+        final Iterator<Character> iterator = list.iterator();
+        int i = 0;
+        while (iterator.hasNext()) {
+            objectArray[i] = iterator.next();
+            i++;
+        }
+        return objectArray;
+    }
+
 
     @ExMethod
     public static <T> List<T> filterNoNull(List<T> list) {
@@ -221,7 +369,7 @@ public class ExCollection {
         for (E e : collection) {
             map.computeIfAbsent(function.apply(e), k -> new ArrayList<>()).add(e);
         }
-        return new HashMap<M,V>().let(a -> {
+        return new HashMap<M, V>().let(a -> {
             map.forEach((key, value) -> a.put(key, valueMap.apply(value)));
         });
     }
@@ -277,9 +425,13 @@ public class ExCollection {
     }
 
     @ExMethod
-    public static <E> void forEachIndex(List<E> collection, BiConsumer<? super E, Integer> function) {
-        for (int i = 0; i < collection.size(); i++) {
-            function.accept(collection.get(i), i);
+    public static <E> void forEachIndex(Collection<E> collection, BiConsumer<? super E, Integer> function) {
+        if (collection==null) return;
+        final Iterator<E> iterator = collection.iterator();
+        int i = 0;
+        while (iterator.hasNext()) {
+            function.accept(iterator.next(), i);
+            i++;
         }
     }
 

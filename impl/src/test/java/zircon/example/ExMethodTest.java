@@ -9,13 +9,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -77,6 +76,14 @@ public class ExMethodTest {
             assertArrayEquals(new String[3], String.class.createObjectArray(3));
             assertArrayEquals(new Integer[3], Integer.class.createObjectArray(3));
         }
+        assertEquals(Arrays.asList(1,2,3), new int[]{1,2,3}.toList());
+        assertEquals(Arrays.asList(1f,2f,3f), new float[]{1f,2f,3f}.toList());
+        assertEquals(Arrays.asList(1d,2d,3d), new double[]{1d,2d,3d}.toList());
+        assertEquals(Arrays.asList(true,false,true), new boolean[]{true,false,true}.toList());
+        assertEquals(Arrays.asList(1L, 2L, 3L), new long[]{1L, 2L, 3L}.toList());
+        assertEquals(Arrays.asList('1','2','3'), new char[]{'1','2','3'}.toList());
+        assertEquals(Arrays.asList((byte)1,(byte)2,(byte)3), new byte[]{(byte)1,(byte)2,(byte)3}.toList());
+        assertEquals(Arrays.asList((short)1,(short)2,(short)3), new short[]{(short)1,(short)2,(short)3}.toList());
     }
 
     @Test
@@ -115,7 +122,7 @@ public class ExMethodTest {
             String nullStr = null;
             assertTrue(nullStr.isNull());
             assertEquals("test", nullStr.nullOr("test"));
-            assertEquals("test", nullStr.nullOr("test").let(a->a.length()));
+            assertEquals("test", nullStr.nullOr("test").let(a -> a.length()));
             assertFalse(this.isNull());
             assertEquals(this, this.nullOr(new ExMethodTest()));
             assertEquals("test1", "test".convert(a -> a += "1"));
@@ -145,11 +152,14 @@ public class ExMethodTest {
             assertEquals(Arrays.asList("test3", "test2", "test1"), strings.sortBy(a -> 3 - a.regex("\\d").head()
                                                                                             .toInt()));
             final List<Integer> intList = Arrays.asList(3, 2, 1);
-            assertEquals(Arrays.asList(1,2,3), intList.sort());
-            assertEquals(Arrays.asList(1,2,3), intList.copy2List().let(it->it.sort(Comparator.comparingInt(a->a))));
-            assertEquals(Arrays.asList(1,2,3), intList.sortBy(a->a));
+            assertEquals(Arrays.asList(1, 2, 3), intList.sort());
+            assertEquals(Arrays.asList(1, 2, 3), intList.copy2List()
+                                                        .let(it -> it.sort(Comparator.comparingInt(a -> a))));
+            assertEquals(Arrays.asList(1, 2, 3), intList.sortBy(a -> a));
             strings.sortBy(function);
             ExCollection.sortBy(strings, function);
+            assertEquals(Arrays.asList("test1", "test2")
+                    , strings.filterContains(Arrays.asList(1, 2), (a, b) -> a.regex("\\d").head().toInt() == b));
             assertEquals(Arrays.asList("test1", "test2", "test3", "test1", "test2", "test3"), List
                     .create("test1", "test2", "test3").addVarargs(strings.toArray(new String[0])));
             strings.map(a -> Integer.parseInt(a.nullOr("123").substring(4)));
@@ -164,11 +174,21 @@ public class ExMethodTest {
             assertEquals("1,2,3",
                     Arrays.asList("test1", "test2", "test3", "test1", "test2", "test3")
                           .groupBy(a -> a.regex("\\d").head())
-                          .keySet().copy2List().sortBy(a->a).join(","));
+                          .keySet().copy2List().sortBy(a -> a).join(","));
             assertEquals("2,2,2",
                     Arrays.asList("test1", "test2", "test3", "test1", "test2", "test3")
                           .groupBy(a -> a.regex("\\d").head(), List::size)
-                          .values().copy2List().sortBy(a->a).join(","));
+                          .values().copy2List().sortBy(a -> a).join(","));
+            assertEquals(Arrays.asList(1, 2, 3, 4), Arrays.asList(Arrays.asList(1, 2), Arrays.asList(3, 4)).flat());
+            assertArrayEquals(Arrays.asList(1,2,3).toIntArray(), new int[]{1,2,3});
+            assertArrayEquals(Arrays.asList(1f,2f,3f).toFloatArray(), new float[]{1f,2f,3f});
+            assertArrayEquals(Arrays.asList(1d,2d,3d).toDoubleArray(), new double[]{1d,2d,3d});
+            assertArrayEquals(Arrays.asList(true,false,true).toBooleanArray(), new boolean[]{true,false,true});
+            assertArrayEquals(Arrays.asList(1L, 2L, 3L).toLongArray(), new long[]{1L, 2L, 3L});
+            assertArrayEquals(Arrays.asList('1','2','3').toCharArray(), new char[]{'1','2','3'});
+            assertArrayEquals(Arrays.asList((byte)1,(byte)2,(byte)3).toByteArray(), new byte[]{(byte)1,(byte)2,(byte)3});
+            assertArrayEquals(Arrays.asList((short)1,(short)2,(short)3).toShortArray(), new short[]{(short)1,(short)2,(short)3});
+
         }
     }
 
@@ -251,6 +271,23 @@ public class ExMethodTest {
 
     @Test
     public void testShow() {
+        String nullStr = Math.random() > 0.5 ? "1" : Math.random() > 0.5 ? "" : null;
+        {
+            //例1：List中寻找到指定值,且未找到时返回null
+            final List<String> list = Arrays.asList("1", "3", "4");
+            final String v1 = list.stream().filter(a -> Integer.parseInt(a) < 2).findFirst().orElse(null);
+            final String v2 = list.find(a -> a.toInt() < 2);
+        }
+        {
+            //例2：字符串判空
+            if (nullStr == null || nullStr.isEmpty()) {
+                //...
+            }
+            if (nullStr.nullOrEmpty()) {
+                //...
+            }
+        }
+
 
         //例1
         "java,Zircon,:)".split(",")

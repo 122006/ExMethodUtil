@@ -1,7 +1,5 @@
 package zircon.example;
 
-import zircon.ExMethod;
-
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +13,10 @@ import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
+
+import zircon.ExMethod;
+import zircon.data.ThrowFunction;
+import zircon.example.ExCollection;
 
 public class ExArray {
     @ExMethod
@@ -137,6 +139,79 @@ public class ExArray {
     }
 
     @ExMethod
+    public static List<Integer> toList(int[] array) {
+        if (array == null) return null;
+        List<Integer> list = new ArrayList<Integer>();
+        for (int i : array) {
+            list.add(i);
+        }
+        return list;
+    }
+    @ExMethod
+    public static List<Long> toList(long[] array) {
+        if (array == null) return null;
+        List<Long> list = new ArrayList<Long>();
+        for (long i : array) {
+            list.add(i);
+        }
+        return list;
+    }
+    @ExMethod
+    public static List<Short> toList(short[] array) {
+        if (array == null) return null;
+        List<Short> list = new ArrayList<Short>();
+        for (short i : array) {
+            list.add(i);
+        }
+        return list;
+    }
+    @ExMethod
+    public static List<Boolean> toList(boolean[] array) {
+        if (array == null) return null;
+        List<Boolean> list = new ArrayList<Boolean>();
+        for (boolean i : array) {
+            list.add(i);
+        }
+        return list;
+    }
+    @ExMethod
+    public static List<Double> toList(double[] array) {
+        if (array == null) return null;
+        List<Double> list = new ArrayList<Double>();
+        for (double i : array) {
+            list.add(i);
+        }
+        return list;
+    }
+    @ExMethod
+    public static List<Float> toList(float[] array) {
+        if (array == null) return null;
+        List<Float> list = new ArrayList<Float>();
+        for (float i : array) {
+            list.add(i);
+        }
+        return list;
+    }
+    @ExMethod
+    public static List<Character> toList(char[] array) {
+        if (array == null) return null;
+        List<Character> list = new ArrayList<Character>();
+        for (char i : array) {
+            list.add(i);
+        }
+        return list;
+    }
+    @ExMethod
+    public static List<Byte> toList(byte[] array) {
+        if (array == null) return null;
+        List<Byte> list = new ArrayList<Byte>();
+        for (byte i : array) {
+            list.add(i);
+        }
+        return list;
+    }
+
+    @ExMethod
     public static <E> E find(E[] collection, Predicate<E> predicate) {
         if (collection == null) return null;
         for (E e : collection) {
@@ -217,6 +292,66 @@ public class ExArray {
     public static long[] filter(long[] collection, LongPredicate predicate) {
         if (collection == null) return null;
         return findAll(collection, predicate);
+    }
+
+    @ExMethod
+    public static <E, R> R[] map(E[] array,Class<R> clazz, ThrowFunction<E, R> function) {
+        if (array == null) return null;
+        final R[] nArray = (R[]) Array.newInstance(clazz, array.length);
+        for (int i = 0; i < array.length; i++) {
+            try {
+                nArray[i] = function.apply(array[0]);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return nArray;
+    }
+
+
+    @ExMethod
+    public static <E> int[] mapToInt(E[] array, ThrowFunction<E, Integer> predicate) {
+        if (array == null) return null;
+        if (array.length == 0) return new int[0];
+        int[] nArray = new int[array.length];
+        for (int i = 0; i < array.length; i++) {
+            try {
+                nArray[i] = predicate.apply(array[0]);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return nArray;
+    }
+
+    @ExMethod
+    public static <E> double[] mapToDouble(E[] array, ThrowFunction<E, Double> predicate) {
+        if (array == null) return null;
+        if (array.length == 0) return new double[0];
+        double[] nArray = new double[array.length];
+        for (int i = 0; i < array.length; i++) {
+            try {
+                nArray[i] = predicate.apply(array[0]);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return nArray;
+    }
+
+    @ExMethod
+    public static <E> long[] mapToLong(E[] array, ThrowFunction<E, Long> predicate) {
+        if (array == null) return null;
+        if (array.length == 0) return new long[0];
+        long[] nArray = new long[array.length];
+        for (int i = 0; i < array.length; i++) {
+            try {
+                nArray[i] = predicate.apply(array[0]);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return nArray;
     }
 
     @ExMethod
