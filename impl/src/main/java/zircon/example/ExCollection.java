@@ -52,7 +52,7 @@ public class ExCollection {
 
 
     @ExMethod
-    public static <E> List<E> flat(Collection<List<E>> collection) {
+    public static <E,M extends List<E>> List<E> flat(Collection<M> collection) {
         if (collection == null) return null;
         List<E> list = new ArrayList<E>();
         for (List<E> e : collection) {
