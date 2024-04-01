@@ -162,9 +162,7 @@ public class ExMethodTest {
             assertThrowsExactly(NumberFormatException.class, () -> strings.map(a -> Integer.valueOf(a)));
             assertThrowsExactly(NumberFormatException.class, () -> strings.map(a -> Integer.parseInt(a)));
             ExCollection.map(strings, a -> a.substring(4)).map(Integer::parseInt);
-            Stream<List<String>> stream = strings.map(a -> a.regex("\\d")).stream();
-            stream.flat();
-            assertEquals(Arrays.asList(1, 2, 3), stream.flat().map(String::toInt)
+            assertEquals(Arrays.asList(1, 2, 3), strings.map(a -> a.regex("\\d")).stream().flat().map(String::toInt)
                     .list());
             assertEquals(123, $throw(() -> Integer.valueOf("123")).get());
             assertEquals("123,456", Arrays.asList(123, 456).join(","));
