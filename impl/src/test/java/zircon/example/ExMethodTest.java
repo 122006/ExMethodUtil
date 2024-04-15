@@ -164,8 +164,8 @@ public class ExMethodTest {
             assertEquals(BigDecimal.valueOf(1.013), "10.125".toBigDecimal(2, RoundingMode.HALF_UP).multiply(0.1));
             assertEquals(BigDecimal.ZERO, "10.125".toBigDecimal(2, RoundingMode.HALF_UP)
                                                   .divide(0, RoundingMode.HALF_UP));
-            assertEquals(BigDecimal.valueOf(1.02), "10.175".toBigDecimal(2, RoundingMode.HALF_UP)
-                                                  .divide(10, RoundingMode.HALF_UP));
+            assertEquals(BigDecimal.valueOf(1.02), "10.175".toBigDecimal(2, RoundingMode.HALF_UP).divide(10));
+            assertEquals(BigDecimal.ZERO, "10.175".toBigDecimal(2, RoundingMode.HALF_UP).divide(0));
             assertEquals("10.20", "10.2".toBigDecimal().toString(2, RoundingMode.HALF_UP));
 
         }

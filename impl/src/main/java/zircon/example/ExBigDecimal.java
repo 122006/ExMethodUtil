@@ -24,8 +24,13 @@ public class ExBigDecimal {
     }
 
     @ExMethod
+    public static BigDecimal divide(BigDecimal bigDecimal, int number) {
+        return divide(bigDecimal, number, RoundingMode.HALF_UP, () -> BigDecimal.ZERO);
+    }
+
+    @ExMethod
     public static BigDecimal divide(BigDecimal bigDecimal, int number, RoundingMode roundingMode) {
-        return divide(bigDecimal, number, roundingMode,()->BigDecimal.ZERO);
+        return divide(bigDecimal, number, roundingMode, () -> BigDecimal.ZERO);
     }
 
     @ExMethod
