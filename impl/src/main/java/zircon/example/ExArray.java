@@ -147,6 +147,7 @@ public class ExArray {
         }
         return list;
     }
+
     @ExMethod
     public static List<Long> toList(long[] array) {
         if (array == null) return null;
@@ -156,6 +157,7 @@ public class ExArray {
         }
         return list;
     }
+
     @ExMethod
     public static List<Short> toList(short[] array) {
         if (array == null) return null;
@@ -165,6 +167,7 @@ public class ExArray {
         }
         return list;
     }
+
     @ExMethod
     public static List<Boolean> toList(boolean[] array) {
         if (array == null) return null;
@@ -174,6 +177,7 @@ public class ExArray {
         }
         return list;
     }
+
     @ExMethod
     public static List<Double> toList(double[] array) {
         if (array == null) return null;
@@ -183,6 +187,7 @@ public class ExArray {
         }
         return list;
     }
+
     @ExMethod
     public static List<Float> toList(float[] array) {
         if (array == null) return null;
@@ -192,6 +197,7 @@ public class ExArray {
         }
         return list;
     }
+
     @ExMethod
     public static List<Character> toList(char[] array) {
         if (array == null) return null;
@@ -201,6 +207,7 @@ public class ExArray {
         }
         return list;
     }
+
     @ExMethod
     public static List<Byte> toList(byte[] array) {
         if (array == null) return null;
@@ -295,7 +302,7 @@ public class ExArray {
     }
 
     @ExMethod
-    public static <E, R> R[] map(E[] array,Class<R> clazz, ThrowFunction<E, R> function) {
+    public static <E, R> R[] map(E[] array, Class<R> clazz, ThrowFunction<E, R> function) {
         if (array == null) return null;
         final R[] nArray = (R[]) Array.newInstance(clazz, array.length);
         for (int i = 0; i < array.length; i++) {
@@ -353,6 +360,7 @@ public class ExArray {
         }
         return nArray;
     }
+
     @ExMethod
     public static <E> E[] createObjectArray(Class<E> clazz, int length) {
         final Object nAr = Array.newInstance(clazz, length);
@@ -450,6 +458,12 @@ public class ExArray {
     @ExMethod
     public static <T> T get(T[] array, int index) {
         if (array == null) return null;
+        if (index >= array.length) {
+            return null;
+        }
+        if (index < 0) {
+            index = array.length + index;
+        }
         return array[index];
     }
 }

@@ -44,7 +44,7 @@ public class ExReflection {
     public static <T, R> R invokeStaticMethod(Class<T> clazz, String methodName, Object... args) {
         try {
             final List<Method> methods = clazz.getDeclaredMethods().toList()
-                                              .filter(method -> Objects.equals(method.getName(), methodName) && method.getParameterCount() == args.length);
+                                              .filter(method -> Objects.equals(method.getName(), methodName) && method.getParameterTypes().length == args.length);
             if (methods.isEmpty()) return null;
             me:
             for (Method method : methods) {
@@ -70,7 +70,7 @@ public class ExReflection {
             Class<?> clazz = obj.getClass();
             do {
                 final List<Method> methods = clazz.getDeclaredMethods().toList()
-                                                  .filter(method -> Objects.equals(method.getName(), methodName) && method.getParameterCount() == args.length);
+                                                  .filter(method -> Objects.equals(method.getName(), methodName) && method.getParameterTypes().length == args.length);
                 if (methods.isEmpty()) continue;
                 me:
                 for (Method method : methods) {

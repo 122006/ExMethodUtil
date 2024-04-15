@@ -96,9 +96,9 @@ public class ExString {
     }
 
     @ExMethod
-    public static BigDecimal toBigDecimal(String str, int setPrecision, RoundingMode setRoundingMode) {
+    public static BigDecimal toBigDecimal(String str, int newScale, RoundingMode setRoundingMode) {
         BigDecimal bigDecimal = str == null ? BigDecimal.ZERO : new BigDecimal(str);
-        bigDecimal = bigDecimal.setScale(setPrecision, setRoundingMode);
+        bigDecimal = bigDecimal.setScale(newScale, setRoundingMode);
         return bigDecimal;
     }
 

@@ -9,19 +9,25 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.math.RoundingMode;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import zircon.ExMethod;
 import zircon.example.ExArray;
+import zircon.example.ExBigDecimal;
 import zircon.example.ExCollection;
 import zircon.example.ExComparable;
 import zircon.example.ExObject;
 import zircon.example.ExReflection;
 import zircon.example.ExStream;
 import zircon.example.ExString;
+import zircon.example.ExThread;
 
 
 @SuppressWarnings("ArraysAsListWithZeroOrOneArgument")
@@ -130,7 +136,37 @@ public class ExMethodTest {
             assertArrayEquals(new String[]{"test1"}, (new String[]{"test"}).let(a -> a[0] += "1"));
             assertArrayEquals(new int[]{2}, (new int[]{1}).let(a -> a[0] += 1));
             assertTrue("123".isInstanceOf(CharSequence.class));
+            assertTrue("123".equals("123"));
+            assertFalse("123".noEquals("123"));
             assertFalse("123".isNoInstanceOf(CharSequence.class));
+            assertTrue(getStackTrace().is(ExMethodTest.class, "testExObject"));
+            ((Runnable) () -> {
+                assertTrue(getStackTrace().is(ExMethodTest.class, "testExObject"));
+            }).run();
+            ((Runnable) new Runnable() {
+                @Override
+                public void run() {
+                    final StackTraceElement stackTrace = getStackTrace();
+                    assertTrue(stackTrace.is(ExMethodTest.class, "testExObject"));
+                    assertTrue(getStackTrace(0,false).getClassName().contains("ExMethodTest"));
+                }
+            }).run();
+
+        }
+    }
+
+    @Test
+    public void testExBigDecimal() {
+        {
+            assertEquals(BigDecimal.valueOf(10.1), BigDecimal.valueOf(10).add(0.1));
+            assertEquals(BigDecimal.valueOf(10.23), "10.125".toBigDecimal(2, RoundingMode.HALF_UP).add(0.1));
+            assertEquals(BigDecimal.valueOf(10.03), "10.125".toBigDecimal(2, RoundingMode.HALF_UP).subtract(0.1));
+            assertEquals(BigDecimal.valueOf(1.013), "10.125".toBigDecimal(2, RoundingMode.HALF_UP).multiply(0.1));
+            assertEquals(BigDecimal.ZERO, "10.125".toBigDecimal(2, RoundingMode.HALF_UP)
+                                                  .divide(0, RoundingMode.HALF_UP));
+            assertEquals(BigDecimal.valueOf(1.02), "10.175".toBigDecimal(2, RoundingMode.HALF_UP)
+                                                  .divide(10, RoundingMode.HALF_UP));
+            assertEquals("10.20", "10.2".toBigDecimal().toString(2, RoundingMode.HALF_UP));
 
         }
     }
@@ -146,16 +182,16 @@ public class ExMethodTest {
             });
             Function<String, Integer> function = a -> 3 - a.regex("\\d").head().toInt();
             assertEquals(Arrays.asList("test3", "test2", "test1"), strings.sortBy(a -> 3 - a.regex("\\d").head()
-                    .toInt()));
+                                                                                            .toInt()));
             final List<Integer> intList = Arrays.asList(3, 2, 1);
             assertEquals(Arrays.asList(1, 2, 3), intList.sort());
             assertEquals(Arrays.asList(1, 2, 3), intList.copy2List()
-                    .let(it -> it.sort(Comparator.comparingInt(a -> a))));
+                                                        .let(it -> it.sort(Comparator.comparingInt(a -> a))));
             assertEquals(Arrays.asList(1, 2, 3), intList.sortBy(a -> a));
             strings.sortBy(function);
             ExCollection.sortBy(strings, function);
-            assertEquals(Arrays.asList("test1", "test2")
-                    , strings.filterContains(Arrays.asList(1, 2), (a, b) -> a.regex("\\d").head().toInt() == b));
+            assertEquals(Arrays.asList("test1", "test2"), strings.filterContains(Arrays.asList(1, 2), (a, b) -> a
+                    .regex("\\d").head().toInt() == b));
             assertEquals(Arrays.asList("test1", "test2", "test3", "test1", "test2", "test3"), List
                     .create("test1", "test2", "test3").addVarargs(strings.toArray(new String[0])));
             strings.map(a -> Integer.parseInt(a.nullOr("123").substring(4)));
@@ -163,27 +199,28 @@ public class ExMethodTest {
             assertThrowsExactly(NumberFormatException.class, () -> strings.map(a -> Integer.parseInt(a)));
             ExCollection.map(strings, a -> a.substring(4)).map(Integer::parseInt);
             assertEquals(Arrays.asList(1, 2, 3), strings.map(a -> a.regex("\\d")).stream().flat().map(String::toInt)
-                    .list());
+                                                        .list());
             assertEquals(123, $throw(() -> Integer.valueOf("123")).get());
             assertEquals("123,456", Arrays.asList(123, 456).join(","));
             assertTrue("123".oneOf("123", "456"));
-            assertEquals("1,2,3",
-                    Arrays.asList("test1", "test2", "test3", "test1", "test2", "test3")
-                            .groupBy(a -> a.regex("\\d").head())
-                            .keySet().copy2List().sortBy(a -> a).join(","));
-            assertEquals("2,2,2",
-                    Arrays.asList("test1", "test2", "test3", "test1", "test2", "test3")
-                            .groupBy(a -> a.regex("\\d").head(), List::size)
-                            .values().copy2List().sortBy(a -> a).join(","));
-            assertEquals(Arrays.asList(1, 2, 3, 4), Arrays.asList(Arrays.asList(1, 3), Arrays.asList(2, 4)).flat().sortBy(a -> a.intValue()));
+            assertEquals("1,2,3", Arrays.asList("test1", "test2", "test3", "test1", "test2", "test3")
+                                        .groupBy(a -> a.regex("\\d").head()).keySet().copy2List().sortBy(a -> a)
+                                        .join(","));
+            assertEquals("2,2,2", Arrays.asList("test1", "test2", "test3", "test1", "test2", "test3")
+                                        .groupBy(a -> a.regex("\\d").head(), List::size).values().copy2List()
+                                        .sortBy(a -> a).join(","));
+            assertEquals(Arrays.asList(1, 2, 3, 4), Arrays.asList(Arrays.asList(1, 3), Arrays.asList(2, 4)).flat()
+                                                          .sortBy(a -> a.intValue()));
             assertArrayEquals(Arrays.asList(1, 2, 3).toIntArray(), new int[]{1, 2, 3});
             assertArrayEquals(Arrays.asList(1f, 2f, 3f).toFloatArray(), new float[]{1f, 2f, 3f});
             assertArrayEquals(Arrays.asList(1d, 2d, 3d).toDoubleArray(), new double[]{1d, 2d, 3d});
             assertArrayEquals(Arrays.asList(true, false, true).toBooleanArray(), new boolean[]{true, false, true});
             assertArrayEquals(Arrays.asList(1L, 2L, 3L).toLongArray(), new long[]{1L, 2L, 3L});
             assertArrayEquals(Arrays.asList('1', '2', '3').toCharArray(), new char[]{'1', '2', '3'});
-            assertArrayEquals(Arrays.asList((byte) 1, (byte) 2, (byte) 3).toByteArray(), new byte[]{(byte) 1, (byte) 2, (byte) 3});
-            assertArrayEquals(Arrays.asList((short) 1, (short) 2, (short) 3).toShortArray(), new short[]{(short) 1, (short) 2, (short) 3});
+            assertArrayEquals(Arrays.asList((byte) 1, (byte) 2, (byte) 3)
+                                    .toByteArray(), new byte[]{(byte) 1, (byte) 2, (byte) 3});
+            assertArrayEquals(Arrays.asList((short) 1, (short) 2, (short) 3)
+                                    .toShortArray(), new short[]{(short) 1, (short) 2, (short) 3});
 
         }
     }
@@ -203,7 +240,7 @@ public class ExMethodTest {
             final List<Integer> collect = Stream.of("1").map(String::toInteger).collect(Collectors.toList());
             assertEquals(Arrays.asList(1), collect);
             assertEquals(Arrays.asList("test1", "test2"), Stream.of("test\\d").map("test1test2"::regex).flat()
-                    .collect(Collectors.toList()));
+                                                                .collect(Collectors.toList()));
         }
     }
 
@@ -286,17 +323,15 @@ public class ExMethodTest {
 
 
         //例1
-        "java,Zircon,:)".split(",")
-                .find(a -> a.startsWith("Z"))             //为字符串数组增加find方法
-                .let(System.out::println);//print: Zircon //为Object增加流式处理函数，避免额外定义变量
+        "java,Zircon,:)".split(",").find(a -> a.startsWith("Z"))             //为字符串数组增加find方法
+                        .let(System.out::println);//print: Zircon //为Object增加流式处理函数，避免额外定义变量
 
         //例2
-        final int num = "num is 1"
-                .regex("\\d")   //为String增加快速正则匹配方法
-                .head()         //为集合增加选取首个值的方法
-                .nullOr("123")  //空安全方法，如果调用对象为null，不会空指针异常而是使用参数值（举例用，这里一定不为null可省略）
-                .toInteger()       //为String增加快速转化int的方法
-                .convert(i -> Math.abs(i + 1)); //为Object增加的流式转化函数，避免先定义i再修改导致无法修改final变量
+        final int num = "num is 1".regex("\\d")   //为String增加快速正则匹配方法
+                                  .head()         //为集合增加选取首个值的方法
+                                  .nullOr("123")  //空安全方法，如果调用对象为null，不会空指针异常而是使用参数值（举例用，这里一定不为null可省略）
+                                  .toInteger()       //为String增加快速转化int的方法
+                                  .convert(i -> Math.abs(i + 1)); //为Object增加的流式转化函数，避免先定义i再修改导致无法修改final变量
         new Thread(() -> System.out.println(num)).start();// print 2 //lambda表达式中引用的方法变量必须为final。
     }
 }

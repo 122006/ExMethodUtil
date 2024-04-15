@@ -1,5 +1,6 @@
 package zircon.example;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -46,6 +47,14 @@ public class ExObject {
         return obj;
     }
 
+    @ExMethod
+    public static <T> T nullOrThrow(T obj, Supplier<Exception> or) {
+        if (obj == null) {
+            throw (RuntimeException) or.get();
+        }
+        return obj;
+    }
+
 
     @ExMethod
     public static <T> T let(T obj, ThrowConsumer<? super T> supplier) {
@@ -85,6 +94,16 @@ public class ExObject {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @ExMethod(cover = true)
+    public static boolean equals(Object obj1, Object obj2) {
+        return Objects.equals(obj1, obj2);
+    }
+
+    @ExMethod
+    public static boolean noEquals(Object obj1, Object obj2) {
+        return !Objects.equals(obj1, obj2);
     }
 
     @ExMethod(ex = {Object.class})
