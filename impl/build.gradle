@@ -1,13 +1,11 @@
-ext {
-    zircon_version = "3.1.9"
-    zircon_ex_method = true
-    zircon_temp_string = true
-}
 apply plugin: 'java'
-apply plugin: 'zircon'
+apply plugin: 'java-library'
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    annotationProcessor 'com.github.122006.zircon:javac:3.2.2'
+    testAnnotationProcessor 'com.github.122006.zircon:javac:3.2.2'
+    api 'com.github.122006.zircon:zircon:3.2.2'
 }
 repositories {
     maven { url 'https://maven.aliyun.com/repository/public/' }
@@ -23,3 +21,10 @@ test {
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
+
+tasks.withType(JavaCompile) {
+    it.options.compilerArgs << "-Xplugin:ZrExMethod"
+    it.options.compilerArgs << "-Xplugin:ZrString"
+    it.options.fork = true
+}
+

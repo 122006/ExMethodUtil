@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 
 import zircon.ExMethod;
@@ -39,6 +40,26 @@ public class ExMap {
                 return kvEntry;
         }
         return null;
+    }
+
+    @ExMethod
+    public static <K, V, R> HashMap<K, R> map(Map<K, V> map, BiFunction<K, V, R> mapping) {
+        HashMap<K, R> hashMap = new HashMap<K, R>();
+        for (Map.Entry<K, V> kvEntry : map.entrySet()) {
+            final R apply = mapping.apply(kvEntry.getKey(), kvEntry.getValue());
+            hashMap.put(kvEntry.getKey(), apply);
+        }
+        return hashMap;
+    }
+
+    @ExMethod
+    public static <K, V, R> List<R> map2List(Map<K, V> map, BiFunction<K, V, R> mapping) {
+        List<R> arrayList = new ArrayList<>();
+        for (Map.Entry<K, V> kvEntry : map.entrySet()) {
+            final R apply = mapping.apply(kvEntry.getKey(), kvEntry.getValue());
+            arrayList.add(apply);
+        }
+        return arrayList;
     }
 
 }

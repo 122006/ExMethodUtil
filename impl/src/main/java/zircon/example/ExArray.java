@@ -466,4 +466,45 @@ public class ExArray {
         }
         return array[index];
     }
+
+    @ExMethod
+    public static int size(int[] array) {
+        return array.length;
+    }
+
+    @ExMethod
+    public static int size(long[] array) {
+        return array.length;
+    }
+
+    @ExMethod
+    public static int size(short[] array) {
+        return array.length;
+    }
+
+    @ExMethod
+    public static int size(byte[] array) {
+        return array.length;
+    }
+
+    @ExMethod
+    public static int size(boolean[] array) {
+        return array.length;
+    }
+
+    @ExMethod
+    public static int size(double[] array) {
+        return array.length;
+    }
+
+    @ExMethod
+    public static int size(float[] array) {
+        return array.length;
+    }
+
+    @ExMethod
+    public static <E> int size(E[] array) {
+        return array.length;
+    }
+
 }

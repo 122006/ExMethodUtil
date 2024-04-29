@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
@@ -148,7 +149,7 @@ public class ExMethodTest {
                 public void run() {
                     final StackTraceElement stackTrace = getStackTrace();
                     assertTrue(stackTrace.is(ExMethodTest.class, "testExObject"));
-                    assertTrue(getStackTrace(0,false).getClassName().contains("ExMethodTest"));
+                    assertTrue(getStackTrace(0, false).getClassName().contains("ExMethodTest"));
                 }
             }).run();
 
@@ -221,6 +222,12 @@ public class ExMethodTest {
                                     .toByteArray(), new byte[]{(byte) 1, (byte) 2, (byte) 3});
             assertArrayEquals(Arrays.asList((short) 1, (short) 2, (short) 3)
                                     .toShortArray(), new short[]{(short) 1, (short) 2, (short) 3});
+            assertEquals("2,2,2", Arrays.asList("test1", "test2", "test3", "test1", "test2", "test3")
+                                        .groupBy(a -> a.regex("\\d").head()).map2List((a, b) -> b.size())
+                                        .join(","));
+            assertEquals("2,3,4", Arrays.asList("test1", "test2", "test3", "test1", "test2", "test3")
+                                        .groupBy(a -> a.regex("\\d").head()).map((a, b) -> a.toInt() + 1).values()
+                                        .join(","));
 
         }
     }
@@ -334,5 +341,31 @@ public class ExMethodTest {
                                   .convert(i -> Math.abs(i + 1)); //为Object增加的流式转化函数，避免先定义i再修改导致无法修改final变量
         new Thread(() -> System.out.println(num)).start();// print 2 //lambda表达式中引用的方法变量必须为final。
     }
+
+    @Test
+    public void expectedCompileFail() {
+//        ArrayList<ArrayList<String>> list = new ArrayList<>();
+//        List<String> flat2 = list.flatTest();
+//        List<String> flat3 = new ArrayList<>().flat();
+//        final TestM<TData> getA = (TData::getA);
+    }
+
+    public <M> M self(M t) {
+        return t;
+    }
+
+
+    static interface TestM<T> extends Serializable {
+        Object get(T source) throws Exception;
+    }
+
+    static class TData {
+        String a = "123";
+
+        public String getA() {
+            return a;
+        }
+    }
+
 }
 

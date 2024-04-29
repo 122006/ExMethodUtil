@@ -26,6 +26,7 @@ import zircon.example.ExObject;
 import zircon.example.ExStream;
 
 public class ExCollection {
+    @SafeVarargs
     @ExMethod(ex = {List.class})
     public static <E> List<E> create(E... data) {
         final ArrayList<E> es = new ArrayList<>();
@@ -35,6 +36,7 @@ public class ExCollection {
 
 
     public static class ExSet {
+        @SafeVarargs
         @ExMethod(ex = {Set.class})
         public static <E> Set<E> create(E... data) {
             final HashSet<E> es = new HashSet<>();
@@ -43,6 +45,7 @@ public class ExCollection {
         }
     }
 
+    @SafeVarargs
     @ExMethod
     public static <E> Collection<E> addVarargs(Collection<E> collection, E... es) {
         if (collection == null) return null;
@@ -52,7 +55,7 @@ public class ExCollection {
 
 
     @ExMethod
-    public static <E,M extends List<E>> List<E> flat(Collection<M> collection) {
+    public static <E, M extends List<E>> List<E> flat(Collection<M> collection) {
         if (collection == null) return null;
         List<E> list = new ArrayList<E>();
         for (List<E> e : collection) {
@@ -271,13 +274,29 @@ public class ExCollection {
     @ExMethod
     public static <K, M> List<M> map(List<K> collection, ThrowFunction<K, M> function) {
         if (collection == null) return null;
-        return collection.stream().map(e -> {
+        List<M> newCollection = new ArrayList<>();
+        for (K k : collection) {
             try {
-                return function.apply((K) e);
-            } catch (Exception ex) {
-                throw (RuntimeException) ex;
+                newCollection.add(function.apply(k));
+            } catch (Exception e) {
+                throw (RuntimeException) e;
             }
-        }).collect(Collectors.toList());
+        }
+        return newCollection;
+    }
+
+    @ExMethod
+    public static <K, M> Set<M> map(Set<K> collection, ThrowFunction<K, M> function) {
+        if (collection == null) return null;
+        Set<M> newCollection = new HashSet<>();
+        for (K k : collection) {
+            try {
+                newCollection.add(function.apply(k));
+            } catch (Exception e) {
+                throw (RuntimeException) e;
+            }
+        }
+        return newCollection;
     }
 
     @ExMethod
@@ -394,13 +413,16 @@ public class ExCollection {
     }
 
     @ExMethod
-    public static <E> String join(List<E> collection, String str) {
+    public static <E> String join(Collection<E> collection, String str) {
         if (collection == null) return null;
         StringBuilder string = new StringBuilder();
-        for (int i = 0; i < collection.size(); i++) {
-            string.append(collection.get(i));
-            if (i != collection.size() - 1)
-                string.append(str);
+        final Iterator<E> iterator = collection.iterator();
+        boolean b = iterator.hasNext();
+        while (b) {
+            final E next = iterator.next();
+            string.append(next);
+            b = iterator.hasNext();
+            if (b) string.append(str);
         }
         return string.toString();
     }
@@ -426,7 +448,7 @@ public class ExCollection {
 
     @ExMethod
     public static <E> void forEachIndex(Collection<E> collection, BiConsumer<? super E, Integer> function) {
-        if (collection==null) return;
+        if (collection == null) return;
         final Iterator<E> iterator = collection.iterator();
         int i = 0;
         while (iterator.hasNext()) {
@@ -435,6 +457,7 @@ public class ExCollection {
         }
     }
 
+    @SafeVarargs
     @ExMethod
     public static <E> boolean oneOf(E obj, E... objs) {
         for (E e : objs) {
