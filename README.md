@@ -59,4 +59,13 @@ Step 2. Add the dependency
 	</dependency>
 ````
 
+该项目已结合zircon模块，maven中引用可以省略zircon
+
 [![](https://jitpack.io/v/122006/ExMethodUtil.svg)](https://jitpack.io/#122006/ExMethodUtil)
+
+
+### 1.1.4不兼容性更新
+> 规范部分参数定义
+1. 全局替换 `.let(`  =>  `.with(`
+2. 全局替换 `.nullOr(`  =>  `.orElse(`
+2. 全局替换 `.nullOrThrow(`  =>  `.orElseThrow(`

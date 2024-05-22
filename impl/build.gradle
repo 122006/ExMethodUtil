@@ -3,9 +3,9 @@ apply plugin: 'java-library'
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
-    annotationProcessor 'com.github.122006.zircon:javac:3.2.2'
-    testAnnotationProcessor 'com.github.122006.zircon:javac:3.2.2'
-    api 'com.github.122006.zircon:zircon:3.2.2'
+    annotationProcessor 'com.github.122006.zircon:javac:3.2.3'
+    testAnnotationProcessor 'com.github.122006.zircon:javac:3.2.3'
+    api 'com.github.122006.zircon:zircon:3.2.3'
 }
 repositories {
     maven { url 'https://maven.aliyun.com/repository/public/' }

@@ -98,6 +98,72 @@ public class ExCollection {
     }
 
     @ExMethod
+    public static <E, R> List<E> findAllEquals(List<E> collection, ThrowFunction<E, R> part, R with) {
+        if (collection == null) return null;
+        List<E> list = new ArrayList<>();
+        for (E e : collection) {
+            try {
+                final R apply = part.apply(e);
+                if (Objects.equals(apply, with)) {
+                    list.add(e);
+                }
+            } catch (Exception ex) {
+                throw (RuntimeException) ex;
+            }
+        }
+        return list;
+    }
+
+    @ExMethod
+    public static <E, R> E findEquals(List<E> collection, ThrowFunction<E, R> part, R with) {
+        if (collection == null) return null;
+        for (E e : collection) {
+            try {
+                final R apply = part.apply(e);
+                if (Objects.equals(apply, with)) {
+                    return e;
+                }
+            } catch (Exception ex) {
+                throw (RuntimeException) ex;
+            }
+        }
+        return null;
+    }
+
+    @ExMethod
+    public static <E, R> Set<E> findAllEquals(Set<E> collection, ThrowFunction<E, R> part, R with) {
+        if (collection == null) return null;
+        Set<E> set = new HashSet<>();
+        for (E e : collection) {
+            try {
+                final R apply = part.apply(e);
+                if (Objects.equals(apply, with)) {
+                    set.add(e);
+                }
+            } catch (Exception ex) {
+                throw (RuntimeException) ex;
+            }
+        }
+        return set;
+    }
+
+    @ExMethod
+    public static <E, R> E findEquals(Set<E> collection, ThrowFunction<E, R> part, R with) {
+        if (collection == null) return null;
+        for (E e : collection) {
+            try {
+                final R apply = part.apply(e);
+                if (Objects.equals(apply, with)) {
+                    return e;
+                }
+            } catch (Exception ex) {
+                throw (RuntimeException) ex;
+            }
+        }
+        return null;
+    }
+
+    @ExMethod
     public static <E, R> List<E> filterContains(Collection<E> collection, List<R> collection2, BiPredicate<E, R> predicate) {
         if (collection == null) return new ArrayList<>();
         if (collection2 == null) return new ArrayList<>();
@@ -388,7 +454,7 @@ public class ExCollection {
         for (E e : collection) {
             map.computeIfAbsent(function.apply(e), k -> new ArrayList<>()).add(e);
         }
-        return new HashMap<M, V>().let(a -> {
+        return new HashMap<M, V>().with(a -> {
             map.forEach((key, value) -> a.put(key, valueMap.apply(value)));
         });
     }

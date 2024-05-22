@@ -1,6 +1,7 @@
 package zircon.example;
 
-import java.util.Objects;
+import java.lang.reflect.Array;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -30,11 +31,62 @@ public class ExObject {
         return obj != null;
     }
 
+    /**
+     * @deprecated Use `orElse` instead
+     */
+    @Deprecated
     @ExMethod
     public static <T> T nullOr(T obj, T or) {
         return obj == null ? or : obj;
     }
 
+    @ExMethod
+    public static <T> T orElse(T obj, T or) {
+        if (obj == null) return or;
+        if (obj.getClass().isArray()) {
+            if (Array.getLength(obj) == 0) return or;
+        } else if (obj instanceof String) {
+            if (((String) obj).length() == 0) return or;
+        } else if (obj instanceof Collection) {
+            if (((Collection<?>) obj).size() == 0) return or;
+        }
+        return obj;
+    }
+
+    @ExMethod
+    public static <T> T orElse(T obj, ThrowSupplier<T> or) {
+        try {
+            if (obj == null) return or.get();
+            if (obj.getClass().isArray()) {
+                if (Array.getLength(obj) == 0) return or.get();
+            } else if (obj instanceof String) {
+                if (((String) obj).length() == 0) return or.get();
+            } else if (obj instanceof Collection) {
+                if (((Collection<?>) obj).size() == 0) return or.get();
+            }
+            return obj;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @ExMethod
+    public static <T, E extends Exception> T orElseThrow(T obj, Supplier<E> or) throws E {
+        if (obj == null) throw or.get();
+        if (obj.getClass().isArray()) {
+            if (Array.getLength(obj) == 0) throw or.get();
+        } else if (obj instanceof String) {
+            if (((String) obj).length() == 0) throw or.get();
+        } else if (obj instanceof Collection) {
+            if (((Collection<?>) obj).size() == 0) throw or.get();
+        }
+        return obj;
+    }
+
+    /**
+     * @deprecated Use `orElse` instead
+     */
+    @Deprecated
     @ExMethod
     public static <T> T nullOr(T obj, ThrowSupplier<T> or) {
         if (obj == null) {
@@ -47,6 +99,10 @@ public class ExObject {
         return obj;
     }
 
+    /**
+     * @deprecated Use `orElseThrow` instead
+     */
+    @Deprecated
     @ExMethod
     public static <T> T nullOrThrow(T obj, Supplier<Exception> or) {
         if (obj == null) {
@@ -57,7 +113,17 @@ public class ExObject {
 
 
     @ExMethod
-    public static <T> T let(T obj, ThrowConsumer<? super T> supplier) {
+    public static <T, R> R let(T obj, ThrowFunction<T, R> supplier) {
+        if (obj == null) return null;
+        try {
+            return supplier.apply(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @ExMethod
+    public static <T> T with(T obj, ThrowConsumer<? super T> supplier) {
         if (obj == null) return null;
         try {
             supplier.accept(obj);

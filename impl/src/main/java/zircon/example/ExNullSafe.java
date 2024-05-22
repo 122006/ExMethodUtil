@@ -21,7 +21,11 @@ public class ExNullSafe {
         if (runnable == null) {
             return null;
         }
-        return runnable.apply(t);
+        try {
+            return runnable.apply(t);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @ExMethod
@@ -29,7 +33,11 @@ public class ExNullSafe {
         if (runnable == null) {
             return false;
         }
-        return runnable.test(t);
+        try {
+            return runnable.test(t);
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @ExMethod
@@ -37,7 +45,10 @@ public class ExNullSafe {
         if (runnable == null) {
             return;
         }
-        runnable.accept(t);
+        try {
+            runnable.accept(t);
+        } catch (Exception e) {
+        }
     }
 
     @ExMethod
@@ -45,6 +56,10 @@ public class ExNullSafe {
         if (runnable == null) {
             return null;
         }
-        return runnable.get();
+        try {
+            return runnable.get();
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

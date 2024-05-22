@@ -18,6 +18,7 @@ import zircon.ExMethod;
 import zircon.data.ThrowFunction;
 import zircon.example.ExCollection;
 
+@SuppressWarnings("unchecked")
 public class ExArray {
     @ExMethod
     public static <T> T[] add(T[] array, T... add) {
