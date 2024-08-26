@@ -140,6 +140,15 @@ public class ExMethodTest {
             }).run();
 
             assertEquals("123", Optional.ofNullable(nullStr).orElse("123"));
+            try {
+                assertEquals("123", Optional.ofNullable(nullStr).orElseThrow(() -> {
+                    throw new RuntimeException();
+                }));
+                String a=Optional.ofNullable(nullStr).orElseThrow(RuntimeException::new);
+                String b=String.format(Optional.ofNullable(nullStr).orElseThrow(RuntimeException::new));
+                assertEquals("123", Optional.ofNullable(nullStr).orElseThrow(RuntimeException::new));
+            } catch (RuntimeException e) {
+            }
             assertEquals("123", nullStr.orElse("123"));
             assertEquals("123", "".orElse("123"));
             assertEquals("123", Arrays.asList().orElse(Arrays.asList("123")).head());
