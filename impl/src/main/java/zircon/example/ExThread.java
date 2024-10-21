@@ -13,14 +13,13 @@ public class ExThread {
     public static StackTraceElement getStackTrace(int index, boolean skipLambdaOrAnonymous) {
         StackTraceElement[] stackTrace = Thread
                 .currentThread().getStackTrace();
-        if (skipLambdaOrAnonymous) stackTrace = stackTrace
-                .findAll(element -> {
-                    return !(element.getClassName().contains("$") || element.getMethodName().startsWith("lambda$"));
-                });
+        if (skipLambdaOrAnonymous) stackTrace = ExArray.findAll(stackTrace, element -> {
+            return !(element.getClassName().contains("$") || element.getMethodName().startsWith("lambda$"));
+        });
         if (index < 0) {
-            return stackTrace.get(index);
+            return ExArray.get(stackTrace, index);
         }
-        return stackTrace.get(index + 2);
+        return ExArray.get(stackTrace, index + 2);
     }
 
     @ExMethod(ex = Object.class)
@@ -32,8 +31,8 @@ public class ExThread {
     public static boolean is(StackTraceElement stackTraceElement, Class<?> clazz, String methodName) {
         if (stackTraceElement == null) return false;
         final String className = clazz.getName();
-        if (stackTraceElement.getClassName().noEquals(className)) return false;
-        if (stackTraceElement.getMethodName().noEquals(methodName)) return false;
+        if (ExObject.noEquals(stackTraceElement.getClassName(), className)) return false;
+        if (ExObject.noEquals(stackTraceElement.getMethodName(), methodName)) return false;
         return true;
     }
 

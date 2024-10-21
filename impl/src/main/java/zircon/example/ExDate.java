@@ -20,35 +20,35 @@ public class ExDate {
 
     @ExMethod(ex = Date.class)
     public static String nowDateStr() {
-        return new Date().format("yyyy/MM/dd");
+        return ExDate.format(new Date(), "yyyy/MM/dd");
     }
 
     @ExMethod(ex = Date.class)
     public static String nowTimeStr() {
-        return new Date().format("HH:mm:ss");
+        return ExDate.format(new Date(), "HH:mm:ss");
     }
 
     @ExMethod(ex = Date.class)
     public static String nowDateTimeStr() {
-        return new Date().format("yyyy/MM/dd HH:mm:ss");
+        return ExDate.format(new Date(), "yyyy/MM/dd HH:mm:ss");
     }
 
     @ExMethod
     public static String dateStr(Date date) {
         if (date==null) return null;
-        return date.format("yyyy/MM/dd");
+        return ExDate.format(date, "yyyy/MM/dd");
     }
 
     @ExMethod
     public static String timeStr(Date date) {
         if (date==null) return null;
-        return date.format("HH:mm:ss");
+        return ExDate.format(date, "HH:mm:ss");
     }
 
     @ExMethod
     public static String dateTimeStr(Date date) {
         if (date==null) return null;
-        return date.format("yyyy/MM/dd HH:mm:ss");
+        return ExDate.format(date, "yyyy/MM/dd HH:mm:ss");
     }
 
 }

@@ -30,7 +30,7 @@ Step 2. Add the dependency
 
 ````
     dependencies {
-	        implementation 'com.github.122006:ExMethodUtil:Tag'
+	        implementation 'com.github.122006:ExMethodUtil:1.1.5'
 	}
 ````
 
@@ -55,7 +55,7 @@ Step 2. Add the dependency
 	<dependency>
 	    <groupId>com.github.122006</groupId>
 	    <artifactId>ExMethodUtil</artifactId>
-	    <version>Tag</version>
+	    <version>1.1.5</version>
 	</dependency>
 ````
 

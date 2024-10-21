@@ -218,6 +218,85 @@ public class ExArray {
         }
         return list;
     }
+    @ExMethod
+    public static List<Integer> wrap(int[] array) {
+        if (array == null) return null;
+        List<Integer> list = new ArrayList<Integer>();
+        for (int i : array) {
+            list.add(i);
+        }
+        return list;
+    }
+
+    @ExMethod
+    public static List<Long> wrap(long[] array) {
+        if (array == null) return null;
+        List<Long> list = new ArrayList<Long>();
+        for (long i : array) {
+            list.add(i);
+        }
+        return list;
+    }
+
+    @ExMethod
+    public static List<Short> wrap(short[] array) {
+        if (array == null) return null;
+        List<Short> list = new ArrayList<Short>();
+        for (short i : array) {
+            list.add(i);
+        }
+        return list;
+    }
+
+    @ExMethod
+    public static List<Boolean> wrap(boolean[] array) {
+        if (array == null) return null;
+        List<Boolean> list = new ArrayList<Boolean>();
+        for (boolean i : array) {
+            list.add(i);
+        }
+        return list;
+    }
+
+    @ExMethod
+    public static List<Double> wrap(double[] array) {
+        if (array == null) return null;
+        List<Double> list = new ArrayList<Double>();
+        for (double i : array) {
+            list.add(i);
+        }
+        return list;
+    }
+
+    @ExMethod
+    public static List<Float> wrap(float[] array) {
+        if (array == null) return null;
+        List<Float> list = new ArrayList<Float>();
+        for (float i : array) {
+            list.add(i);
+        }
+        return list;
+    }
+
+    @ExMethod
+    public static List<Character> wrap(char[] array) {
+        if (array == null) return null;
+        List<Character> list = new ArrayList<Character>();
+        for (char i : array) {
+            list.add(i);
+        }
+        return list;
+    }
+
+    @ExMethod
+    public static List<Byte> wrap(byte[] array) {
+        if (array == null) return null;
+        List<Byte> list = new ArrayList<Byte>();
+        for (byte i : array) {
+            list.add(i);
+        }
+        return list;
+    }
 
     @ExMethod
     public static <E> E find(E[] collection, Predicate<E> predicate) {
@@ -257,7 +336,7 @@ public class ExArray {
     public static <E> E[] findAll(E[] collection, Predicate<E> predicate) {
         if (collection == null) return null;
         final Object nAr = Array.newInstance(collection.getClass().getComponentType(), 0);
-        return Arrays.asList(collection).filter(predicate).toArray((E[]) nAr);
+        return ExCollection.filter(Arrays.asList(collection), predicate).toArray((E[]) nAr);
     }
 
     @ExMethod
@@ -281,25 +360,25 @@ public class ExArray {
     @ExMethod
     public static <E> E[] filter(E[] collection, Predicate<E> predicate) {
         if (collection == null) return null;
-        return findAll(collection, predicate);
+        return ExArray.findAll(collection, predicate);
     }
 
     @ExMethod
     public static int[] filter(int[] collection, IntPredicate predicate) {
         if (collection == null) return null;
-        return findAll(collection, predicate);
+        return ExArray.findAll(collection, predicate);
     }
 
     @ExMethod
     public static double[] filter(double[] collection, DoublePredicate predicate) {
         if (collection == null) return null;
-        return findAll(collection, predicate);
+        return ExArray.findAll(collection, predicate);
     }
 
     @ExMethod
     public static long[] filter(long[] collection, LongPredicate predicate) {
         if (collection == null) return null;
-        return findAll(collection, predicate);
+        return ExArray.findAll(collection, predicate);
     }
 
     @ExMethod
@@ -371,7 +450,7 @@ public class ExArray {
     @ExMethod
     public static <T> List<T> list(T[] array) {
         if (array == null) return null;
-        return toList(array);
+        return ExArray.toList(array);
     }
 
     @ExMethod

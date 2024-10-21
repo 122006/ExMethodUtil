@@ -73,9 +73,9 @@ public class FatherReflectionTestClass {
         //=================使用java的Stream筛选=================
         final String[] v1 = Arrays.stream(str.split(",")).filter(a -> Integer.parseInt(a) % 2 == 0).toArray(String[]::new);
         //=================使用zircon筛选=======================
-        final String[] v2 = str.split(",").findAll(a -> a.toInt() % 2 == 0);
+        final String[] v2 = ExArray.findAll(str.split(","), a -> ExString.toInt(a) % 2 == 0);
 
 
-        final String[] v3 = str.split(",").findAll(a -> a.toInt() % 2 == 0);
+        final String[] v3 = ExArray.findAll(str.split(","), a -> ExString.toInt(a) % 2 == 0);
     }
 }

@@ -31,7 +31,7 @@ public class ExString {
 
     @ExMethod
     public static String nullOrEmpty(String str, String str2) {
-        if (str.nullOrEmpty()) {
+        if (ExString.nullOrEmpty(str)) {
             return str2;
         }
         return str;
@@ -92,7 +92,7 @@ public class ExString {
 
     @ExMethod
     public static BigDecimal toBigDecimal(String str, int setPrecision) {
-        return toBigDecimal(str, setPrecision, RoundingMode.HALF_UP);
+        return ExString.toBigDecimal(str, setPrecision, RoundingMode.HALF_UP);
     }
 
     @ExMethod

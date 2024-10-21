@@ -25,12 +25,12 @@ public class ExBigDecimal {
 
     @ExMethod
     public static BigDecimal divide(BigDecimal bigDecimal, int number) {
-        return divide(bigDecimal, number, RoundingMode.HALF_UP, () -> BigDecimal.ZERO);
+        return ExBigDecimal.divide(bigDecimal, number, RoundingMode.HALF_UP, () -> BigDecimal.ZERO);
     }
 
     @ExMethod
     public static BigDecimal divide(BigDecimal bigDecimal, int number, RoundingMode roundingMode) {
-        return divide(bigDecimal, number, roundingMode, () -> BigDecimal.ZERO);
+        return ExBigDecimal.divide(bigDecimal, number, roundingMode, () -> BigDecimal.ZERO);
     }
 
     @ExMethod
@@ -108,4 +108,11 @@ public class ExBigDecimal {
     public static String toString(BigDecimal bigDecimal, int newScale) {
         return bigDecimal.setScale(newScale, RoundingMode.HALF_UP).toString();
     }
+
+    @ExMethod(ex = BigDecimal.class)
+    public static BigDecimal valueOf(String value) {
+        return new BigDecimal(value);
+    }
+
+
 }

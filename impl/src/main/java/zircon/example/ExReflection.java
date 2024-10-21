@@ -43,8 +43,7 @@ public class ExReflection {
     @ExMethod
     public static <T, R> R invokeStaticMethod(Class<T> clazz, String methodName, Object... args) {
         try {
-            final List<Method> methods = clazz.getDeclaredMethods().toList()
-                                              .filter(method -> Objects.equals(method.getName(), methodName) && method.getParameterTypes().length == args.length);
+            final List<Method> methods = ExCollection.filter(ExArray.toList(clazz.getDeclaredMethods()), method -> Objects.equals(method.getName(), methodName) && method.getParameterTypes().length == args.length);
             if (methods.isEmpty()) return null;
             me:
             for (Method method : methods) {
@@ -69,15 +68,14 @@ public class ExReflection {
         try {
             Class<?> clazz = obj.getClass();
             do {
-                final List<Method> methods = clazz.getDeclaredMethods().toList()
-                                                  .filter(method -> Objects.equals(method.getName(), methodName) && method.getParameterTypes().length == args.length);
+                final List<Method> methods = ExCollection.filter(ExArray.toList(clazz.getDeclaredMethods()), method -> Objects.equals(method.getName(), methodName) && method.getParameterTypes().length == args.length);
                 if (methods.isEmpty()) continue;
                 me:
                 for (Method method : methods) {
                     final Class<?>[] parameterTypes = method.getParameterTypes();
                     for (int i = 0; i < parameterTypes.length; i++) {
                         final Object arg = args[i];
-                        if (!parameterTypes[i].primToWrap().isAssignableFrom(arg.getClass().primToWrap())) {
+                        if (!ExClass.primToWrap(parameterTypes[i]).isAssignableFrom(ExClass.primToWrap(arg.getClass()))) {
                             continue me;
                         }
                     }

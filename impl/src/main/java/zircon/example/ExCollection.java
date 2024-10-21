@@ -1,5 +1,6 @@
 package zircon.example;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -12,11 +13,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.*;
 import java.util.stream.Collectors;
 
 import zircon.ExMethod;
@@ -302,19 +299,19 @@ public class ExCollection {
     @ExMethod
     public static <T> List<T> filterNoNull(List<T> list) {
         if (list == null) return null;
-        return list.filter(Objects::nonNull);
+        return ExCollection.filter(list, Objects::nonNull);
     }
 
     @ExMethod
     public static <E> List<E> filter(List<E> collection, Predicate<E> predicate) {
         if (collection == null) return null;
-        return findAll(collection, predicate);
+        return ExCollection.findAll(collection, predicate);
     }
 
     @ExMethod
     public static <E> Set<E> filter(Set<E> collection, Predicate<E> predicate) {
         if (collection == null) return null;
-        return findAll(collection, predicate);
+        return ExCollection.findAll(collection, predicate);
     }
 
     @ExMethod
@@ -325,6 +322,158 @@ public class ExCollection {
             }
         }
         return false;
+    }
+
+    @ExMethod
+    public static <E> E reduce(Collection<E> collection, E identity, BinaryOperator<E> accumulator) {
+        if (collection.size() == 0) return identity;
+        E data = null;
+        for (E e : collection) {
+            if (data == null) data = e;
+            else data = accumulator.apply(data, e);
+        }
+        return data;
+    }
+
+    @ExMethod
+    public static <E> E reduce(E[] collection, E identity, BinaryOperator<E> accumulator) {
+        if (collection.size() == 0) return identity;
+        E data = null;
+        for (E e : collection) {
+            if (data == null) data = e;
+            else data = accumulator.apply(data, e);
+        }
+        return data;
+    }
+
+    public static class SumBigDecimal {
+        @ExMethod
+        public static BigDecimal sum(Collection<BigDecimal> collection) {
+            if (collection.size() == 0) return BigDecimal.ZERO;
+            BigDecimal number = null;
+            for (BigDecimal e : collection) {
+                if (number == null) number = e;
+                else number = number.add(e);
+            }
+            return number;
+        }
+
+        @ExMethod
+        public static BigDecimal sum(BigDecimal[] collection) {
+            if (collection.size() == 0) return BigDecimal.ZERO;
+            BigDecimal number = null;
+            for (BigDecimal e : collection) {
+                if (number == null) number = e;
+                else number = number.add(e);
+            }
+            return number;
+        }
+
+    }
+
+    public static class SumInteger {
+        @ExMethod
+        public static int sum(Collection<Integer> collection) {
+            if (collection.size() == 0) return 0;
+            Integer number = null;
+            for (Integer e : collection) {
+                if (number == null) number = e;
+                else number = number + e;
+            }
+            return number;
+        }
+
+        @ExMethod
+        public static int sum(Integer[] collection) {
+            if (collection.size() == 0) return 0;
+            Integer number = null;
+            for (Integer e : collection) {
+                if (number == null) number = e;
+                else number = number + e;
+            }
+            return number;
+        }
+
+        @ExMethod
+        public static int sum(int[] collection) {
+            if (collection.size() == 0) return 0;
+            Integer number = null;
+            for (Integer e : collection) {
+                if (number == null) number = e;
+                else number = number + e;
+            }
+            return number;
+        }
+    }
+
+    public static class SumDouble {
+        @ExMethod
+        public static double sum(Collection<Double> collection) {
+            if (collection.size() == 0) return 0;
+            Double number = null;
+            for (Double e : collection) {
+                if (number == null) number = e;
+                else number = number + e;
+            }
+            return number;
+        }
+
+        @ExMethod
+        public static double sum(Double[] collection) {
+            if (collection.size() == 0) return 0;
+            Double number = null;
+            for (Double e : collection) {
+                if (number == null) number = e;
+                else number = number + e;
+            }
+            return number;
+        }
+
+        @ExMethod
+        public static double sum(double[] collection) {
+            if (collection.size() == 0) return 0;
+            Double number = null;
+            for (Double e : collection) {
+                if (number == null) number = e;
+                else number = number + e;
+            }
+            return number;
+        }
+    }
+
+    public static class SumLong {
+        @ExMethod
+        public static long sum(Collection<Long> collection) {
+            if (collection.size() == 0) return 0;
+            Long number = null;
+            for (Long e : collection) {
+                if (number == null) number = e;
+                else number = number + e;
+            }
+            return number;
+        }
+
+        @ExMethod
+        public static long sum(Long[] collection) {
+            if (collection.size() == 0) return 0;
+            Long number = null;
+            for (Long e : collection) {
+                if (number == null) number = e;
+                else number = number + e;
+            }
+            return number;
+        }
+
+        @ExMethod
+        public static long sum(long[] collection) {
+            if (collection.size() == 0) return 0;
+            Long number = null;
+            for (Long e : collection) {
+                if (number == null) number = e;
+                else number = number + e;
+            }
+            return number;
+        }
     }
 
     @ExMethod
@@ -454,7 +603,7 @@ public class ExCollection {
         for (E e : collection) {
             map.computeIfAbsent(function.apply(e), k -> new ArrayList<>()).add(e);
         }
-        return new HashMap<M, V>().with(a -> {
+        return ExObject.with(new HashMap<M, V>(), a -> {
             map.forEach((key, value) -> a.put(key, valueMap.apply(value)));
         });
     }
@@ -509,7 +658,7 @@ public class ExCollection {
     @ExMethod
     public static <E> List<E> distinct(List<E> collection, Function<? super E, ?> keyExtractor) {
         if (collection == null) return null;
-        return collection.stream().distinctByKey(keyExtractor).collect(Collectors.toList());
+        return ExStream.distinctByKey(collection.stream(), keyExtractor).collect(Collectors.toList());
     }
 
     @ExMethod
