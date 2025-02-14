@@ -16,6 +16,9 @@ public class ExComparable {
 
     @ExMethod
     public static <T extends Comparable<T>> boolean eq(Comparable<T> v1, T v2) {
+        if (v1 == null) {
+            return v2 == null;
+        }
         return v1.compareTo(v2) == 0;
     }
 

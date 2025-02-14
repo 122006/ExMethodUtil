@@ -33,7 +33,7 @@ public class ExArray {
     public static byte[] add(byte[] array, byte... add) {
         if (array == null) return null;
         final byte[] nArray = (byte[]) Array.newInstance(array.getClass()
-                                                              .getComponentType(), array.length + add.length);
+                .getComponentType(), array.length + add.length);
         System.arraycopy(array, 0, nArray, 0, array.length);
         System.arraycopy(add, 0, nArray, array.length, add.length);
         return nArray;
@@ -218,6 +218,7 @@ public class ExArray {
         }
         return list;
     }
+
     @ExMethod
     public static List<Integer> wrap(int[] array) {
         if (array == null) return null;
@@ -226,6 +227,16 @@ public class ExArray {
             list.add(i);
         }
         return list;
+    }
+
+    @ExMethod
+    public static Integer[] wrap2Array(int[] array) {
+        if (array == null) return null;
+        Integer[] nArray = new Integer[array.length];
+        for (int i = 0; i < array.length; i++) {
+            nArray[i] = array[i];
+        }
+        return nArray;
     }
 
     @ExMethod
@@ -239,6 +250,16 @@ public class ExArray {
     }
 
     @ExMethod
+    public static Long[] wrap2Array(long[] array) {
+        if (array == null) return null;
+        Long[] nArray = new Long[array.length];
+        for (int i = 0; i < array.length; i++) {
+            nArray[i] = array[i];
+        }
+        return nArray;
+    }
+
+    @ExMethod
     public static List<Short> wrap(short[] array) {
         if (array == null) return null;
         List<Short> list = new ArrayList<Short>();
@@ -246,6 +267,16 @@ public class ExArray {
             list.add(i);
         }
         return list;
+    }
+
+    @ExMethod
+    public static Short[] wrap2Array(short[] array) {
+        if (array == null) return null;
+        Short[] nArray = new Short[array.length];
+        for (int i = 0; i < array.length; i++) {
+            nArray[i] = array[i];
+        }
+        return nArray;
     }
 
     @ExMethod
@@ -259,6 +290,16 @@ public class ExArray {
     }
 
     @ExMethod
+    public static Boolean[] wrap2Array(boolean[] array) {
+        if (array == null) return null;
+        Boolean[] nArray = new Boolean[array.length];
+        for (int i = 0; i < array.length; i++) {
+            nArray[i] = array[i];
+        }
+        return nArray;
+    }
+
+    @ExMethod
     public static List<Double> wrap(double[] array) {
         if (array == null) return null;
         List<Double> list = new ArrayList<Double>();
@@ -266,6 +307,16 @@ public class ExArray {
             list.add(i);
         }
         return list;
+    }
+
+    @ExMethod
+    public static Double[] wrap2Array(double[] array) {
+        if (array == null) return null;
+        Double[] nArray = new Double[array.length];
+        for (int i = 0; i < array.length; i++) {
+            nArray[i] = array[i];
+        }
+        return nArray;
     }
 
     @ExMethod
@@ -279,6 +330,16 @@ public class ExArray {
     }
 
     @ExMethod
+    public static Float[] wrap2Array(float[] array) {
+        if (array == null) return null;
+        Float[] nArray = new Float[array.length];
+        for (int i = 0; i < array.length; i++) {
+            nArray[i] = array[i];
+        }
+        return nArray;
+    }
+
+    @ExMethod
     public static List<Character> wrap(char[] array) {
         if (array == null) return null;
         List<Character> list = new ArrayList<Character>();
@@ -289,6 +350,16 @@ public class ExArray {
     }
 
     @ExMethod
+    public static Character[] wrap2Array(char[] array) {
+        if (array == null) return null;
+        Character[] nArray = new Character[array.length];
+        for (int i = 0; i < array.length; i++) {
+            nArray[i] = array[i];
+        }
+        return nArray;
+    }
+
+    @ExMethod
     public static List<Byte> wrap(byte[] array) {
         if (array == null) return null;
         List<Byte> list = new ArrayList<Byte>();
@@ -296,6 +367,16 @@ public class ExArray {
             list.add(i);
         }
         return list;
+    }
+
+    @ExMethod
+    public static Byte[] wrap2Array(byte[] array) {
+        if (array == null) return null;
+        Byte[] nArray = new Byte[array.length];
+        for (int i = 0; i < array.length; i++) {
+            nArray[i] = array[i];
+        }
+        return nArray;
     }
 
     @ExMethod
@@ -382,17 +463,65 @@ public class ExArray {
     }
 
     @ExMethod
-    public static <E, R> R[] map(E[] array, Class<R> clazz, ThrowFunction<E, R> function) {
+    public static <E, R> R[] map(E[] array, Class<R> clazz, ThrowFunction<E,? extends  R> function) {
         if (array == null) return null;
         final R[] nArray = (R[]) Array.newInstance(clazz, array.length);
         for (int i = 0; i < array.length; i++) {
             try {
-                nArray[i] = function.apply(array[0]);
+                nArray[i] = function.apply(array[i]);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
         return nArray;
+    }
+
+    @ExMethod
+    public static <E, R> R[] map(E[] array, ThrowFunction<E,? extends R> function) {
+        if (array == null) return null;
+        final R[] nArray = (R[]) new Object[array.length];
+        for (int i = 0; i < array.length; i++) {
+            try {
+                nArray[i] = function.apply(array[i]);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return nArray;
+    }
+
+    @ExMethod
+    public static <E, R> R[] map(E[] array, R[] tArray, ThrowFunction<E, ? extends R> function) {
+        if (array == null) return null;
+        final R[] nArray;
+        if (tArray.length != array.length) {
+            nArray = tArray.expandArray(array.length);
+        } else {
+            nArray = tArray;
+        }
+        for (int i = 0; i < array.length; i++) {
+            try {
+                nArray[i] = function.apply(array[i]);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return nArray;
+    }
+
+    @ExMethod
+    public static <T> T[] expandArray(T[] originalArray, int newSize) {
+        // 检查新大小是否合法
+        if (newSize <= originalArray.length) {
+            throw new IllegalArgumentException("新大小必须大于原数组长度");
+        }
+        // 创建一个新数组
+        @SuppressWarnings("unchecked")
+        T[] newArray = (T[]) new Object[newSize]; // 注意：这里使用了 Object 数组
+        // 将原数组的内容复制到新数组
+        System.arraycopy(originalArray, 0, newArray, 0, originalArray.length);
+
+        return newArray;
     }
 
 
@@ -403,7 +532,7 @@ public class ExArray {
         int[] nArray = new int[array.length];
         for (int i = 0; i < array.length; i++) {
             try {
-                nArray[i] = predicate.apply(array[0]);
+                nArray[i] = predicate.apply(array[i]);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -418,7 +547,7 @@ public class ExArray {
         double[] nArray = new double[array.length];
         for (int i = 0; i < array.length; i++) {
             try {
-                nArray[i] = predicate.apply(array[0]);
+                nArray[i] = predicate.apply(array[i]);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -433,7 +562,7 @@ public class ExArray {
         long[] nArray = new long[array.length];
         for (int i = 0; i < array.length; i++) {
             try {
-                nArray[i] = predicate.apply(array[0]);
+                nArray[i] = predicate.apply(array[i]);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

@@ -1,5 +1,7 @@
 package zircon.example;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,7 +46,7 @@ public class ExCollection {
 
     @SafeVarargs
     @ExMethod
-    public static <E> Collection<E> addVarargs(Collection<E> collection, E... es) {
+    public static <E, L extends Collection<E>> L addVarargs(L collection, E... es) {
         if (collection == null) return null;
         Collections.addAll(collection, es);
         return collection;
@@ -95,7 +97,7 @@ public class ExCollection {
     }
 
     @ExMethod
-    public static <E, R> List<E> findAllEquals(List<E> collection, ThrowFunction<E, R> part, R with) {
+    public static <E, R> List<E> findAllEquals(List<E> collection, ThrowFunction<E, ? extends R> part, R with) {
         if (collection == null) return null;
         List<E> list = new ArrayList<>();
         for (E e : collection) {
@@ -112,7 +114,7 @@ public class ExCollection {
     }
 
     @ExMethod
-    public static <E, R> E findEquals(List<E> collection, ThrowFunction<E, R> part, R with) {
+    public static <E, R> E findEquals(List<E> collection, ThrowFunction<E, ? extends R> part, R with) {
         if (collection == null) return null;
         for (E e : collection) {
             try {
@@ -128,7 +130,7 @@ public class ExCollection {
     }
 
     @ExMethod
-    public static <E, R> Set<E> findAllEquals(Set<E> collection, ThrowFunction<E, R> part, R with) {
+    public static <E, R> Set<E> findAllEquals(Set<E> collection, ThrowFunction<E, ? extends R> part, R with) {
         if (collection == null) return null;
         Set<E> set = new HashSet<>();
         for (E e : collection) {
@@ -145,7 +147,7 @@ public class ExCollection {
     }
 
     @ExMethod
-    public static <E, R> E findEquals(Set<E> collection, ThrowFunction<E, R> part, R with) {
+    public static <E, R> E findEquals(Set<E> collection, ThrowFunction<E, ? extends R> part, R with) {
         if (collection == null) return null;
         for (E e : collection) {
             try {
@@ -175,6 +177,14 @@ public class ExCollection {
             }
         }
         return list;
+    }
+
+    @ExMethod
+    public static <T> T[] toArray(Collection<T> list) {
+        if (list == null) return null;
+        final T[] objectArray = (T[]) new Object[list.size()];
+        System.arraycopy(list.toArray(), 0, objectArray, 0, list.size());
+        return objectArray;
     }
 
     @ExMethod
@@ -308,10 +318,35 @@ public class ExCollection {
         return ExCollection.findAll(collection, predicate);
     }
 
+
+    @ExMethod
+    public static <E> List<E> filterNot(List<E> collection, Predicate<E> predicate) {
+        if (collection == null) return null;
+        return ExCollection.findAll(collection, predicate.negate());
+    }
+
+    @ExMethod
+    public static <E, R> List<? extends R> filter(List<E> collection, Class<? super R> clazz) {
+        if (collection == null) return null;
+        return ExCollection.findAll(collection, a -> a.isInstanceOf(clazz)).map(a -> (R) a);
+    }
+
+    @ExMethod
+    public static <E, R> Set<? extends R> filter(Set<E> collection, Class<? super R> clazz) {
+        if (collection == null) return null;
+        return ExCollection.findAll(collection, a -> a.isInstanceOf(clazz)).map(a -> (R) a);
+    }
+
     @ExMethod
     public static <E> Set<E> filter(Set<E> collection, Predicate<E> predicate) {
         if (collection == null) return null;
         return ExCollection.findAll(collection, predicate);
+    }
+
+    @ExMethod
+    public static <E> Set<E> filterNot(Set<E> collection, Predicate<E> predicate) {
+        if (collection == null) return null;
+        return ExCollection.findAll(collection, predicate.negate());
     }
 
     @ExMethod
@@ -487,7 +522,7 @@ public class ExCollection {
     }
 
     @ExMethod
-    public static <K, M> List<M> map(List<K> collection, ThrowFunction<K, M> function) {
+    public static <K, M> List<M> map(List<K> collection, ThrowFunction<K, ? extends M> function) {
         if (collection == null) return null;
         List<M> newCollection = new ArrayList<>();
         for (K k : collection) {
@@ -501,7 +536,7 @@ public class ExCollection {
     }
 
     @ExMethod
-    public static <K, M> Set<M> map(Set<K> collection, ThrowFunction<K, M> function) {
+    public static <K, M> Set<M> map(Set<K> collection, ThrowFunction<K, ? extends M> function) {
         if (collection == null) return null;
         Set<M> newCollection = new HashSet<>();
         for (K k : collection) {
@@ -517,6 +552,11 @@ public class ExCollection {
     @ExMethod
     public static <E> boolean nullOrEmpty(Collection<E> collection) {
         return collection == null || collection.isEmpty();
+    }
+
+    @ExMethod
+    public static <E> boolean noEmpty(Collection<E> collection) {
+        return collection != null && !collection.isEmpty();
     }
 
 //    @ExMethod
@@ -682,7 +722,7 @@ public class ExCollection {
     }
 
     @ExMethod
-    public static <E, R> List<R> mapIndex(List<E> collection, BiFunction<? super E, Integer, R> function) {
+    public static <E, R> List<R> mapIndex(List<E> collection, BiFunction<? super E, Integer, ? extends R> function) {
         if (collection == null) return null;
         List<R> re = new ArrayList<>();
         for (int i = 0; i < collection.size(); i++) {
