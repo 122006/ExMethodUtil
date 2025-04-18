@@ -360,22 +360,22 @@ public class ExCollection {
     }
 
     @ExMethod
-    public static <E> E reduce(Collection<E> collection, E identity, BinaryOperator<E> accumulator) {
+    public static <E, T> T reduce(Collection<E> collection, T identity, BiFunction<T, E, T> accumulator) {
         if (collection.size() == 0) return identity;
-        E data = null;
+        T data = identity;
         for (E e : collection) {
-            if (data == null) data = e;
+            if (e == null) continue;
             else data = accumulator.apply(data, e);
         }
         return data;
     }
 
     @ExMethod
-    public static <E> E reduce(E[] collection, E identity, BinaryOperator<E> accumulator) {
+    public static <E, T> T reduce(E[] collection, T identity, BiFunction<T, E, T> accumulator) {
         if (collection.size() == 0) return identity;
-        E data = null;
+        T data = identity;
         for (E e : collection) {
-            if (data == null) data = e;
+            if (e == null) continue;
             else data = accumulator.apply(data, e);
         }
         return data;

@@ -19,7 +19,6 @@ public class ExClass {
         map.put(void.class, Void.class);
     });
 
-    @ExMethod
     public static <T> Class<?> primToWrap(Class<T> clazz) {
         return primToWrap.getOrDefault(clazz, clazz);
     }

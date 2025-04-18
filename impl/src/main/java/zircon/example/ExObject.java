@@ -8,6 +8,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import zircon.ExMethod;
+import zircon.ExMethodIDE;
 import zircon.data.*;
 
 public class ExObject {
@@ -122,7 +123,7 @@ public class ExObject {
     public static <T, T2, R> R let(T obj, T2 t2, ThrowBiFunction<T, T2, R> supplier) {
         if (obj == null) return null;
         try {
-            return supplier.apply(obj,t2);
+            return supplier.apply(obj, t2);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -190,6 +191,7 @@ public class ExObject {
     }
 
     @ExMethod(ex = {Object.class})
+    @ExMethodIDE(shouldInvokeDirectly = true)
     public static <T, R> Function<T, R> $throw(ThrowFunction<T, R> action) {
         return t -> {
             try {
@@ -201,6 +203,7 @@ public class ExObject {
     }
 
     @ExMethod(ex = {Object.class})
+    @ExMethodIDE(shouldInvokeDirectly = true)
     public static <T> Supplier<T> $throw(ThrowSupplier<T> action) {
         return () -> {
             try {
@@ -212,6 +215,7 @@ public class ExObject {
     }
 
     @ExMethod(ex = {Object.class})
+    @ExMethodIDE(shouldInvokeDirectly = true)
     public static Runnable $throw(ThrowRunnable action) {
         return () -> {
             try {
@@ -223,6 +227,7 @@ public class ExObject {
     }
 
     @ExMethod(ex = {Object.class})
+    @ExMethodIDE(shouldInvokeDirectly = true)
     public static <T> Consumer<T> $throw(ThrowConsumer<T> action) {
         return (t) -> {
             try {
@@ -234,6 +239,7 @@ public class ExObject {
     }
 
     @ExMethod(ex = {Object.class})
+    @ExMethodIDE(shouldInvokeDirectly = true)
     public static <T> Predicate<T> $throw(ThrowPredicate<T> action) {
         return (t) -> {
             try {

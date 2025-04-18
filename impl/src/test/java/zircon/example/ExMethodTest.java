@@ -27,9 +27,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import static java.util.Objects.isNull;
 
 
 @SuppressWarnings({"ArraysAsListWithZeroOrOneArgument"})
@@ -167,9 +164,6 @@ public class ExMethodTest {
             assertEquals("123", "".orElse("123"));
             assertEquals("123", Arrays.asList().orElse(Arrays.asList("123")).head());
             assertEquals("123", new String[0].orElse(Arrays.asList("123").toArray(String.class)).get(0));
-        }
-        {
-            assertTrue(isNull(null));
         }
 
         {

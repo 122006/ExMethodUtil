@@ -2,14 +2,17 @@ package zircon.example;
 
 
 import zircon.ExMethod;
+import zircon.ExMethodIDE;
 
 public class ExThread {
     @ExMethod(ex = Object.class)
+    @ExMethodIDE(shouldInvokeDirectly = true)
     public static StackTraceElement getStackTrace(int index) {
         return getStackTrace(index + 1, true);
     }
 
     @ExMethod(ex = Object.class)
+    @ExMethodIDE(shouldInvokeDirectly = true)
     public static StackTraceElement getStackTrace(int index, boolean skipLambdaOrAnonymous) {
         StackTraceElement[] stackTrace = Thread
                 .currentThread().getStackTrace();
@@ -23,6 +26,7 @@ public class ExThread {
     }
 
     @ExMethod(ex = Object.class)
+    @ExMethodIDE(shouldInvokeDirectly = true)
     public static StackTraceElement getStackTrace() {
         return getStackTrace(1);
     }
