@@ -31,7 +31,6 @@ Step 2. Add the dependency
 ````
     dependencies {
 	     implementation 'com.github.122006:ExMethodUtil:1.1.8'
-	     implementation 'com.github.122006.zircon:zircon:3.2.6'
 	}
 ````
 
