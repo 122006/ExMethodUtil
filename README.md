@@ -30,7 +30,8 @@ Step 2. Add the dependency
 
 ````
     dependencies {
-	        implementation 'com.github.122006:ExMethodUtil:1.1.5'
+	     implementation 'com.github.122006:ExMethodUtil:1.1.8'
+	     implementation 'com.github.122006.zircon:zircon:3.2.6'
 	}
 ````
 
@@ -42,10 +43,10 @@ Step 1. Add the JitPack repository to your build file
 
 ````
     <repositories>
-    <repository>
-    <id>jitpack.io</id>
-    <url>https://jitpack.io</url>
-    </repository>
+        <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 ````
 
@@ -55,11 +56,17 @@ Step 2. Add the dependency
 	<dependency>
 	    <groupId>com.github.122006</groupId>
 	    <artifactId>ExMethodUtil</artifactId>
-	    <version>1.1.5</version>
+	    <version>1.1.8</version>
 	</dependency>
+	<dependency>
+        <groupId>com.github.122006.Zircon</groupId>
+        <artifactId>zircon</artifactId>
+        <version>3.2.6</version>
+    </dependency>
 ````
 
-该项目已结合zircon模块，maven中引用可以省略zircon
+~~该项目已结合zircon模块，maven中引用可以省略zircon~~
+1.1.8版本以上不再引入zircon模块，避免版本冲突问题
 
 [![](https://jitpack.io/v/122006/ExMethodUtil.svg)](https://jitpack.io/#122006/ExMethodUtil)
 

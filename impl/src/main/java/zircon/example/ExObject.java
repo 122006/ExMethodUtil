@@ -141,6 +141,17 @@ public class ExObject {
     }
 
     @ExMethod
+    public static <T> T also(T obj, ThrowConsumer<? super T> supplier) {
+        if (obj == null) return null;
+        try {
+            supplier.accept(obj);
+            return obj;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @ExMethod
     public static <T, F1> T with(T obj, F1 f1, ThrowBiConsumer<? super T, ? super F1> supplier) {
         if (obj == null) return null;
         try {

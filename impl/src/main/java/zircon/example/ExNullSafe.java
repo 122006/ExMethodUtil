@@ -47,7 +47,7 @@ public class ExNullSafe {
         }
         try {
             runnable.accept(t);
-        } catch (Exception e) {
+        } catch (Exception ignore) {
         }
     }
 

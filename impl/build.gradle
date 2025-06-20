@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'java-library'
 
 ext{
-    zirconVersion = '097c85ed49'
+    zirconVersion = '2a7bc5f2dc'
 }
 
 dependencies {
@@ -10,7 +10,7 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
     annotationProcessor "com.github.122006.zircon:javac:${zirconVersion}"
     testAnnotationProcessor "com.github.122006.zircon:javac:${zirconVersion}"
-    api "com.github.122006.zircon:zircon:${zirconVersion}"
+    compileOnly "com.github.122006.zircon:zircon:${zirconVersion}"
 }
 repositories {
     maven { url 'https://maven.aliyun.com/repository/public/' }

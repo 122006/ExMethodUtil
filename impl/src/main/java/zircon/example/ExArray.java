@@ -1,10 +1,7 @@
 package zircon.example;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.function.DoublePredicate;
 import java.util.function.IntPredicate;
 import java.util.function.LongPredicate;
@@ -463,7 +460,7 @@ public class ExArray {
     }
 
     @ExMethod
-    public static <E, R> R[] map(E[] array, Class<R> clazz, ThrowFunction<E,? extends  R> function) {
+    public static <E, R> R[] map(E[] array, Class<R> clazz, ThrowFunction<E, ? extends R> function) {
         if (array == null) return null;
         final R[] nArray = (R[]) Array.newInstance(clazz, array.length);
         for (int i = 0; i < array.length; i++) {
@@ -477,7 +474,7 @@ public class ExArray {
     }
 
     @ExMethod
-    public static <E, R> R[] map(E[] array, ThrowFunction<E,? extends R> function) {
+    public static <E, R> R[] map(E[] array, ThrowFunction<E, ? extends R> function) {
         if (array == null) return null;
         final R[] nArray = (R[]) new Object[array.length];
         for (int i = 0; i < array.length; i++) {
@@ -715,5 +712,61 @@ public class ExArray {
     public static <E> int size(E[] array) {
         return array.length;
     }
+
+
+    @ExMethod
+    public static boolean contains(int[] collection, int value) {
+        if (collection == null) return false;
+        for (int i : collection) {
+            if (i == value) return true;
+        }
+        return false;
+    }
+
+    @ExMethod
+    public static boolean contains(long[] collection, long value) {
+        if (collection == null) return false;
+        for (long i : collection) {
+            if (i == value) return true;
+        }
+        return false;
+    }
+
+    @ExMethod
+    public static boolean contains(byte[] collection, byte value) {
+        if (collection == null) return false;
+        for (byte i : collection) {
+            if (i == value) return true;
+        }
+        return false;
+    }
+
+    @ExMethod
+    public static boolean contains(double[] collection, double value) {
+        if (collection == null) return false;
+        for (double i : collection) {
+            if (i == value) return true;
+        }
+        return false;
+    }
+
+    @ExMethod
+    public static boolean contains(float[] collection, float value) {
+        if (collection == null) return false;
+        for (float i : collection) {
+            if (i == value) return true;
+        }
+        return false;
+    }
+
+    @ExMethod
+    public static <T> boolean contains(T[] collection, T value) {
+        if (collection == null) return false;
+        for (T i : collection) {
+            if (Objects.equals(i, value)) return true;
+        }
+        return false;
+    }
+
 
 }
